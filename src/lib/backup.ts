@@ -8,7 +8,7 @@ import { db, getMeta, setMeta, type Spider, type TrackEvent } from './db';
  * lose the device. Treat it as a load-bearing feature, not a nice-to-have.
  */
 
-export const BACKUP_FORMAT = 'spoodtime-backup';
+export const BACKUP_FORMAT = 'spoodhub-backup';
 export const BACKUP_VERSION = 1;
 
 const LAST_EXPORT_KEY = 'lastExportAt';
@@ -41,7 +41,7 @@ export async function downloadBackup(): Promise<void> {
 
   const link = document.createElement('a');
   link.href = url;
-  link.download = `spoodtime-${backup.exportedAt.slice(0, 10)}.json`;
+  link.download = `spoodhub-${backup.exportedAt.slice(0, 10)}.json`;
   document.body.appendChild(link);
   link.click();
   link.remove();
@@ -63,11 +63,11 @@ function assertBackup(value: unknown): asserts value is BackupFile {
   }
   const candidate = value as Partial<BackupFile>;
   if (candidate.format !== BACKUP_FORMAT) {
-    throw new Error('That does not look like a spoodTime backup file.');
+    throw new Error('That does not look like a spoodHub backup file.');
   }
   if (typeof candidate.version !== 'number' || candidate.version > BACKUP_VERSION) {
     throw new Error(
-      `That backup was made by a newer version of spoodTime (v${candidate.version}). Update the app first.`,
+      `That backup was made by a newer version of spoodHub (v${candidate.version}). Update the app first.`,
     );
   }
   if (!Array.isArray(candidate.spiders) || !Array.isArray(candidate.events)) {

@@ -1,4 +1,4 @@
-# spoodTime
+# spoodHub
 
 An open jumping spider care reference, plus a feeding and molt tracker that runs entirely on
 the keeper's own device.

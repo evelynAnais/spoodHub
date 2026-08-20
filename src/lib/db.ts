@@ -21,7 +21,7 @@ import type { Meta, Spider, TrackEvent } from './types';
 
 export * from './types';
 
-const db = new Dexie('spoodtime') as Dexie & {
+const db = new Dexie('spoodhub') as Dexie & {
   spiders: EntityTable<Spider, 'id'>;
   events: EntityTable<TrackEvent, 'id'>;
   meta: EntityTable<Meta, 'key'>;

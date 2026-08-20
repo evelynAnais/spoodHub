@@ -17,8 +17,8 @@
  */
 
 const VERSION = 'v1';
-const SHELL_CACHE = `spoodtime-shell-${VERSION}`;
-const RUNTIME_CACHE = `spoodtime-runtime-${VERSION}`;
+const SHELL_CACHE = `spoodhub-shell-${VERSION}`;
+const RUNTIME_CACHE = `spoodhub-runtime-${VERSION}`;
 
 const SHELL = ['/', '/track', '/log', '/species', '/care', '/about', '/manifest.webmanifest'];
 
