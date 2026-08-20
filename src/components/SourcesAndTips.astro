@@ -1,0 +1,101 @@
+---
+interface Source {
+  label: string;
+  url: string;
+  kind: 'paper' | 'book' | 'database' | 'care-sheet' | 'community';
+}
+
+/** Ordered strongest first — sources sort by this so the best evidence leads. */
+const KIND_RANK: Record<Source['kind'], number> = {
+  paper: 0,
+  book: 1,
+  database: 2,
+  'care-sheet': 3,
+  community: 4,
+};
+
+const KIND_LABEL: Record<Source['kind'], string> = {
+  paper: 'Peer-reviewed',
+  book: 'Book',
+  database: 'Database',
+  'care-sheet': 'Care sheet',
+  community: 'Keeper community',
+};
+
+const KIND_TONE: Record<Source['kind'], string> = {
+  paper: 'bg-ok/10 text-ok border-ok/30',
+  book: 'bg-ok/10 text-ok border-ok/30',
+  database: 'bg-info/10 text-info border-info/30',
+  'care-sheet': 'bg-raised text-muted border-line',
+  community: 'bg-watch/10 text-watch border-watch/30',
+};
+
+interface Tip {
+  text: string;
+  by: string;
+  context?: string;
+}
+
+interface Props {
+  sources: Source[];
+  tips: Tip[];
+}
+
+const { sources, tips } = Astro.props;
+const sorted = [...sources].sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind]);
+---
+
+{
+  tips.length > 0 && (
+    <section class="mt-10">
+      <h2 class="font-semibold">From keepers</h2>
+      <p class="mt-1 text-sm text-muted">
+        Individual observations contributed by people keeping these spiders. Unlike the guide
+        above, these are not backed by a published source — treat them as one keeper's experience
+        rather than established fact.
+      </p>
+
+      <ul class="mt-4 space-y-3">
+        {tips.map((tip) => (
+          <li class="rounded-xl border border-dashed border-line bg-raised/50 p-4">
+            <p class="text-sm">{tip.text}</p>
+            <p class="mt-2 text-xs text-muted">
+              — {tip.by}
+              {tip.context && <span> · {tip.context}</span>}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<section class="mt-10 border-t border-line pt-6">
+  <h2 class="font-semibold">Sources</h2>
+  <ul class="mt-3 space-y-2 text-sm">
+    {
+      sorted.map((source) => (
+        <li class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span
+            class:list={[
+              'shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium',
+              KIND_TONE[source.kind],
+            ]}
+          >
+            {KIND_LABEL[source.kind]}
+          </span>
+          <a
+            href={source.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-accent hover:underline"
+          >
+            {source.label}
+            <span aria-hidden="true"> ↗</span>
+            <span class="sr-only">(opens in a new tab)</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

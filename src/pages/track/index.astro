@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import TrackerApp from '../../components/tracker/TrackerApp';
+import Base from '../../layouts/Base.astro';
+import type { SpeciesOption } from '../../lib/species';
+
+/**
+ * The species list is resolved at build time and handed to the island as a
+ * prop, so the client bundle never has to know about content collections.
+ */
+const speciesOptions: SpeciesOption[] = (await getCollection('species'))
+  .map((entry) => ({
+    slug: entry.id,
+    commonName: entry.data.commonName,
+    scientificName: entry.data.scientificName,
+    typicalMoltIntervalDays: entry.data.typicalMoltIntervalDays,
+  }))
+  .sort((a, b) => a.commonName.localeCompare(b.commonName));
+---
+
+<Base
+  title="Tracker — spoodTime"
+  description="Track feedings, molts and behaviour for your jumping spiders. Stored on your device."
+>
+  {/*
+    client:only because every byte this component renders comes from IndexedDB,
+    which does not exist during the build. There is nothing to pre-render.
+  */}
+  <TrackerApp speciesOptions={speciesOptions} client:only="react">
+    <p slot="fallback" class="py-12 text-center text-muted">Loading your log…</p>
+  </TrackerApp>
+</Base>

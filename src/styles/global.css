@@ -1,0 +1,91 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Tokens are declared as plain CSS variables below, then mapped into Tailwind's
+   theme with `@theme inline` so utilities like `bg-surface` / `text-muted` work
+   while still switching automatically with the visitor's colour scheme. */
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-raised: var(--c-raised);
+  --color-line: var(--c-line);
+  --color-fg: var(--c-fg);
+  --color-muted: var(--c-muted);
+  --color-accent: var(--c-accent);
+  --color-accent-fg: var(--c-accent-fg);
+
+  --color-ok: var(--c-ok);
+  --color-watch: var(--c-watch);
+  --color-alert: var(--c-alert);
+  --color-info: var(--c-info);
+}
+
+:root {
+  color-scheme: light;
+  --c-bg: #faf8f5;
+  --c-surface: #ffffff;
+  --c-raised: #f3f0ea;
+  --c-line: #e2ddd3;
+  --c-fg: #1c1917;
+  --c-muted: #6d6660;
+  --c-accent: #a8560c;
+  --c-accent-fg: #ffffff;
+
+  --c-ok: #15803d;
+  --c-watch: #a16207;
+  --c-alert: #b91c1c;
+  --c-info: #0369a1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --c-bg: #12100f;
+    --c-surface: #1b1917;
+    --c-raised: #26221f;
+    --c-line: #35302b;
+    --c-fg: #f0ece7;
+    --c-muted: #a49c93;
+    --c-accent: #f0a53a;
+    --c-accent-fg: #1c1917;
+
+    --c-ok: #4ade80;
+    --c-watch: #fbbf24;
+    --c-alert: #fb7185;
+    --c-info: #60a5fa;
+  }
+}
+
+html {
+  background-color: var(--c-bg);
+  color: var(--c-fg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+/* Keeps the quick-log screen usable one-handed at the shelf. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* stops iOS Safari zooming on focus */
+  }
+}
+
+.prose {
+  --tw-prose-body: var(--c-fg);
+  --tw-prose-headings: var(--c-fg);
+  --tw-prose-bold: var(--c-fg);
+  --tw-prose-links: var(--c-accent);
+  --tw-prose-quotes: var(--c-muted);
+  --tw-prose-quote-borders: var(--c-line);
+  --tw-prose-hr: var(--c-line);
+  --tw-prose-bullets: var(--c-muted);
+  --tw-prose-counters: var(--c-muted);
+  --tw-prose-code: var(--c-fg);
+  --tw-prose-th-borders: var(--c-line);
+  --tw-prose-td-borders: var(--c-line);
+}

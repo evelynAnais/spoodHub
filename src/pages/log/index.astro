@@ -1,0 +1,23 @@
+---
+import QuickLog from '../../components/tracker/QuickLog';
+import Base from '../../layouts/Base.astro';
+
+/**
+ * The page an enclosure tag opens: /log?s=<spider-uuid>
+ *
+ * A query parameter rather than a path segment (/log/<id>) because spider ids
+ * are generated on the keeper's device and cannot be known at build time — a
+ * static site has no route to pre-render for them.
+ */
+---
+
+<Base title="Quick log — spoodTime" bare>
+  <div class="mx-auto max-w-md">
+    <a href="/track" class="text-sm text-accent hover:underline">← spoodTime tracker</a>
+    <div class="mt-4">
+      <QuickLog client:only="react">
+        <p slot="fallback" class="py-12 text-center text-muted">Loading…</p>
+      </QuickLog>
+    </div>
+  </div>
+</Base>

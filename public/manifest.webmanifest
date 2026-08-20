@@ -1,0 +1,42 @@
+{
+  "name": "spoodTime — jumping spider care & tracking",
+  "short_name": "spoodTime",
+  "description": "An open jumping spider care reference with a private feeding and molt tracker that runs entirely on your own device.",
+  "start_url": "/track",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#12100f",
+  "theme_color": "#12100f",
+  "categories": ["lifestyle", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open tracker",
+      "url": "/track"
+    },
+    {
+      "name": "Care guides",
+      "url": "/care"
+    }
+  ]
+}

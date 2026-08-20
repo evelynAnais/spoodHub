@@ -1,0 +1,76 @@
+---
+import { getCollection, render } from 'astro:content';
+import SourcesAndTips from '../../components/SourcesAndTips.astro';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const species = await getCollection('species');
+  return species.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<Base title={`${d.commonName} — spoodTime`} description={`Care profile for ${d.scientificName}.`}>
+  <a href="/species" class="text-sm text-accent hover:underline">← All species</a>
+
+  <header class="mt-4">
+    <h1 class="text-3xl font-bold">{d.commonName}</h1>
+    <p class="mt-1 text-lg italic text-muted">{d.scientificName}</p>
+    {
+      d.aliases.length > 0 && (
+        <p class="mt-1 text-sm text-muted">Also called: {d.aliases.join(', ')}</p>
+      )
+    }
+  </header>
+
+  <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+    {
+      [
+        { label: 'Female size', value: d.adultSize.female },
+        { label: 'Male size', value: d.adultSize.male },
+        { label: 'Temperature', value: `${d.temperatureC.min}–${d.temperatureC.max} °C` },
+        { label: 'Humidity', value: `${d.humidityPct.min}–${d.humidityPct.max}%` },
+        { label: 'Female lifespan', value: d.lifespan.female },
+        { label: 'Male lifespan', value: d.lifespan.male },
+        { label: 'Temperament', value: d.temperament },
+        { label: 'Difficulty', value: d.difficulty },
+      ].map((stat) => (
+        <div class="rounded-lg border border-line bg-raised px-3 py-2">
+          <dt class="text-xs text-muted">{stat.label}</dt>
+          <dd class="mt-0.5 font-medium capitalize">{stat.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+
+  <p class="mt-4 text-sm text-muted">
+    <strong class="text-fg">Native range:</strong>
+    {d.nativeRange}
+    {
+      d.typicalMoltIntervalDays && (
+        <>
+          {' · '}
+          <strong class="text-fg">Typical molt interval:</strong> ~{d.typicalMoltIntervalDays} days
+        </>
+      )
+    }
+  </p>
+
+  <article class="prose prose-sm mt-8 max-w-none sm:prose-base">
+    <Content />
+  </article>
+
+  <SourcesAndTips sources={d.sources} tips={d.tips} />
+
+  <footer class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+    <span>Updated {d.updated.toLocaleDateString()}</span>
+    {d.contributors.length > 0 && <span>· Contributors: {d.contributors.join(', ')}</span>}
+    <a href="/about#contributing" class="text-accent hover:underline">· Suggest a correction</a>
+  </footer>
+</Base>

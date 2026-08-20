@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Type errors across .astro, .ts and .tsx.
+      - name: Typecheck
+        run: npm run check
+
+      # The pre-molt rules.
+      - name: Test
+        run: npm test
+
+      # This is the step that validates community contributions: a species or
+      # care file with a missing, misspelled or malformed field fails here, and
+      # the error names the file and the field.
+      - name: Build (validates content schemas)
+        run: npm run build

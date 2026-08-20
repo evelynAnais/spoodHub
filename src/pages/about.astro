@@ -1,0 +1,163 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="About — spoodTime"
+  description="How spoodTime stores your data, and how to contribute care information."
+>
+  <h1 class="text-3xl font-bold">About spoodTime</h1>
+  <p class="mt-3 max-w-2xl text-lg text-muted">
+    Two things in one place: an open care reference anyone can improve, and a private tracker for
+    your own spiders.
+  </p>
+
+  <section id="how-the-tracker-works" class="mt-12 scroll-mt-8">
+    <h2 class="text-2xl font-semibold">How the tracker works</h2>
+
+    <div class="mt-4 rounded-xl border border-info/30 bg-info/10 p-5">
+      <h3 class="font-semibold">Your data stays on your device</h3>
+      <p class="mt-2 text-sm">
+        When you visit this site your browser downloads the app itself — some HTML and JavaScript.
+        Everything you then log is written to a database inside your own browser (IndexedDB) and
+        stays there. There is no account, no server storing your records, and nothing is uploaded.
+      </p>
+      <p class="mt-2 text-sm">
+        This also means other people using this site cannot see your spiders and you cannot see
+        theirs. They are separate databases on separate devices that have never been in contact.
+      </p>
+    </div>
+
+    <h3 class="mt-8 text-lg font-semibold">What that costs you</h3>
+    <ul class="mt-3 space-y-3 text-muted">
+      <li class="flex gap-3">
+        <span class="text-alert">▪</span>
+        <span>
+          <strong class="text-fg">Clearing your browser data deletes your log.</strong> So does
+          uninstalling the app, or "clear site data" in browser settings. Download a backup file
+          regularly — the tracker will remind you.
+        </span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-alert">▪</span>
+        <span>
+          <strong class="text-fg">It does not sync between devices.</strong> Your phone and your
+          laptop keep separate logs. To move data between them, download a backup on one and import
+          it on the other.
+        </span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-alert">▪</span>
+        <span>
+          <strong class="text-fg">Different browsers do not share.</strong> Chrome and Firefox on
+          the same phone each get their own database.
+        </span>
+      </li>
+    </ul>
+
+    <h3 class="mt-8 text-lg font-semibold">Install it</h3>
+    <p class="mt-2 text-muted">
+      On Android, Chrome's menu offers <em>Add to home screen</em>. On iPhone, use Safari's share
+      button then <em>Add to Home Screen</em>. Installing gives you an app icon, an offline-capable
+      app, and storage the browser is less likely to clear on its own.
+    </p>
+
+    <h3 class="mt-8 text-lg font-semibold">Enclosure tags</h3>
+    <p class="mt-2 text-muted">
+      Each spider has its own quick-log link, shown on its page in the tracker. Write it to an NFC
+      sticker or print it as a QR code and put it on the enclosure — tapping or scanning opens a
+      one-tap logging screen for that spider. Because the link points at your own local database,
+      it only works on a device that has that spider's record.
+    </p>
+
+    <h3 class="mt-8 text-lg font-semibold">The pre-molt estimate</h3>
+    <p class="mt-2 text-muted">
+      The tracker watches for the signals keepers already use: consecutive refused feedings, a
+      sealed silk retreat, heavy webbing, and how far the spider is through its expected molt
+      interval. Until a spider has molted twice under your care it uses a rough interval for its
+      instar; after that it uses that spider's own history, which is far more accurate.
+    </p>
+    <p class="mt-2 text-muted">
+      It also accounts for the most common false alarm. Being rehoused unsettles a spider and
+      commonly costs it a few feedings, which looks identical to pre-molt on paper. So if the
+      refusals only started after a rehouse you logged, it says so rather than telling you to stop
+      feeding — unless the retreat has sealed up, which is physical evidence that outranks any
+      amount of stress.
+    </p>
+    <p class="mt-2 text-muted">
+      It always shows you the reasons behind its verdict, because it is a prompt to go look at the
+      enclosure — not a replacement for looking. It can be wrong, and a spider that has genuinely
+      stopped eating for another reason deserves attention rather than a stopped feeding schedule.
+    </p>
+  </section>
+
+  <section id="contributing" class="mt-16 scroll-mt-8">
+    <h2 class="text-2xl font-semibold">Contributing care information</h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      Every species profile and care guide on this site is a Markdown file in the repository. If you
+      keep jumping spiders and something here is wrong, incomplete, or missing a species, the fix is
+      a pull request — you do not need to know how the app works.
+    </p>
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-3">
+      <div class="rounded-xl border border-line bg-surface p-4">
+        <div class="text-sm font-semibold text-accent">1</div>
+        <h3 class="mt-1 font-medium">Find the file</h3>
+        <p class="mt-1 text-sm text-muted">
+          Species live in <code class="text-xs">src/content/species/</code>, guides in
+          <code class="text-xs">src/content/care/</code>.
+        </p>
+      </div>
+      <div class="rounded-xl border border-line bg-surface p-4">
+        <div class="text-sm font-semibold text-accent">2</div>
+        <h3 class="mt-1 font-medium">Edit and open a PR</h3>
+        <p class="mt-1 text-sm text-muted">
+          GitHub's pencil button works fine. Add a source for anything factual — husbandry folklore
+          spreads fast.
+        </p>
+      </div>
+      <div class="rounded-xl border border-line bg-surface p-4">
+        <div class="text-sm font-semibold text-accent">3</div>
+        <h3 class="mt-1 font-medium">Checks run automatically</h3>
+        <p class="mt-1 text-sm text-muted">
+          A missing or malformed field fails the build and shows up on your PR before a human looks
+          at it.
+        </p>
+      </div>
+    </div>
+
+    <h3 class="mt-8 text-lg font-semibold">What a species file looks like</h3>
+    <pre class="mt-3 overflow-x-auto rounded-xl border border-line bg-surface p-4 text-xs"><code>---
+commonName: Regal Jumping Spider
+scientificName: Phidippus regius
+nativeRange: Southeastern United States, Caribbean
+adultSize: &#123; female: "15-22mm", male: "12-18mm" &#125;
+lifespan: &#123; female: "18-24 months", male: "12-18 months" &#125;
+temperament: bold
+difficulty: beginner
+temperatureC: &#123; min: 21, max: 27 &#125;
+humidityPct: &#123; min: 50, max: 70 &#125;
+sources:
+  - label: Example source
+    url: https://example.org/regius
+updated: 2026-08-18
+---
+
+Everything below the dashes is normal Markdown.</code></pre>
+
+    <p class="mt-4 text-muted">
+      The full field list and rules live in
+      <code class="text-xs">CONTRIBUTING.md</code> in the repository.
+    </p>
+
+    <div class="mt-8 rounded-xl border border-watch/30 bg-watch/10 p-5">
+      <h3 class="font-semibold">A note on accuracy</h3>
+      <p class="mt-2 text-sm">
+        Invertebrate husbandry advice online is often repeated without a source and sometimes
+        actively harmful. Prefer published care sheets, peer-reviewed papers, and firsthand keeper
+        experience described as such. If something is contested, say so on the page rather than
+        picking a side.
+      </p>
+    </div>
+  </section>
+</Base>

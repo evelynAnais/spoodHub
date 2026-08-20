@@ -1,0 +1,38 @@
+---
+import { getCollection, render } from 'astro:content';
+import SourcesAndTips from '../../components/SourcesAndTips.astro';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const care = await getCollection('care');
+  return care.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<Base title={`${d.title} — spoodTime`} description={d.summary}>
+  <a href="/care" class="text-sm text-accent hover:underline">← All care guides</a>
+
+  <header class="mt-4">
+    <h1 class="text-3xl font-bold">{d.title}</h1>
+    <p class="mt-2 text-lg text-muted">{d.summary}</p>
+  </header>
+
+  <article class="prose prose-sm mt-8 max-w-none sm:prose-base">
+    <Content />
+  </article>
+
+  <SourcesAndTips sources={d.sources} tips={d.tips} />
+
+  <footer class="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
+    <span>Updated {d.updated.toLocaleDateString()}</span>
+    {d.contributors.length > 0 && <span>· Contributors: {d.contributors.join(', ')}</span>}
+    <a href="/about#contributing" class="text-accent hover:underline">· Suggest a correction</a>
+  </footer>
+</Base>

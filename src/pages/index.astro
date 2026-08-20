@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const species = (await getCollection('species')).sort((a, b) =>
+  a.data.commonName.localeCompare(b.data.commonName),
+);
+const care = (await getCollection('care')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="spoodTime — jumping spider care & tracking">
+  <section class="py-8">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+      Everything about your <span class="text-accent">jumping spiders</span>, in one place.
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg text-muted">
+      An open care reference anyone can improve, plus a feeding and molt tracker that runs
+      entirely on your own device — no account, no server, works offline.
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a
+        href="/track"
+        class="rounded-lg bg-accent px-5 py-2.5 font-medium text-accent-fg transition hover:opacity-90"
+      >
+        Open the tracker
+      </a>
+      <a
+        href="/species"
+        class="rounded-lg border border-line bg-raised px-5 py-2.5 font-medium transition hover:border-accent/50"
+      >
+        Browse species
+      </a>
+    </div>
+  </section>
+
+  <section class="mt-12">
+    <div class="flex items-baseline justify-between">
+      <h2 class="text-xl font-semibold">Species</h2>
+      <a href="/species" class="text-sm text-accent hover:underline">All {species.length} →</a>
+    </div>
+    <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        species.slice(0, 6).map((entry) => (
+          <li>
+            <a
+              href={`/species/${entry.id}`}
+              class="block h-full rounded-xl border border-line bg-surface p-4 transition hover:border-accent/50"
+            >
+              <h3 class="font-semibold">{entry.data.commonName}</h3>
+              <p class="text-xs italic text-muted">{entry.data.scientificName}</p>
+              <p class="mt-2 text-sm text-muted">
+                {entry.data.difficulty} · {entry.data.temperament}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-12">
+    <div class="flex items-baseline justify-between">
+      <h2 class="text-xl font-semibold">Care guides</h2>
+      <a href="/care" class="text-sm text-accent hover:underline">All {care.length} →</a>
+    </div>
+    <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+      {
+        care.slice(0, 4).map((entry) => (
+          <li>
+            <a
+              href={`/care/${entry.id}`}
+              class="block h-full rounded-xl border border-line bg-surface p-4 transition hover:border-accent/50"
+            >
+              <h3 class="font-semibold">{entry.data.title}</h3>
+              <p class="mt-1 text-sm text-muted">{entry.data.summary}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-12 rounded-xl border border-line bg-surface p-6">
+    <h2 class="text-xl font-semibold">How the tracker works</h2>
+    <div class="mt-4 grid gap-6 sm:grid-cols-3">
+      <div>
+        <h3 class="font-medium">Log feedings and molts</h3>
+        <p class="mt-1 text-sm text-muted">
+          Record what was offered and whether it was taken. Refusals matter as much as meals.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-medium">Get a pre-molt warning</h3>
+        <p class="mt-1 text-sm text-muted">
+          A run of refused prey plus a sealed silk retreat is the classic tell. The app watches for
+          it so you stop offering food at the right time.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-medium">Stays on your device</h3>
+        <p class="mt-1 text-sm text-muted">
+          No account and no server. Download a backup file whenever you want a copy.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

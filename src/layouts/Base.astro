@@ -1,0 +1,107 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Quick-log is a focused screen — it hides the site chrome. */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description = 'An open jumping spider care reference, with a private feeding and molt tracker that runs entirely on your own device.',
+  bare = false,
+} = Astro.props;
+
+const nav = [
+  { href: '/species', label: 'Species' },
+  { href: '/care', label: 'Care' },
+  { href: '/track', label: 'Tracker' },
+  { href: '/about', label: 'About' },
+];
+
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#12100f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="spoodTime" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body class="bg-bg text-fg antialiased">
+    {
+      !bare && (
+        <header class="border-b border-line">
+          <nav class="mx-auto flex max-w-5xl items-center gap-1 px-4 py-3">
+            <a href="/" class="mr-auto text-lg font-bold tracking-tight">
+              spood<span class="text-accent">Time</span>
+            </a>
+            {nav.map((item) => (
+              <a
+                href={item.href}
+                class:list={[
+                  'rounded-lg px-3 py-1.5 text-sm font-medium transition',
+                  path.startsWith(item.href)
+                    ? 'bg-raised text-fg'
+                    : 'text-muted hover:text-fg',
+                ]}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </header>
+      )
+    }
+
+    <main class="mx-auto max-w-5xl px-4 py-8">
+      <slot />
+    </main>
+
+    {
+      !bare && (
+        <footer class="mt-16 border-t border-line">
+          <div class="mx-auto max-w-5xl px-4 py-8 text-sm text-muted">
+            <p>
+              Care information here is contributed by keepers and is not veterinary advice. Found
+              something wrong?{' '}
+              <a href="/about#contributing" class="text-accent hover:underline">
+                Open a pull request
+              </a>
+              .
+            </p>
+            <p class="mt-2">
+              Your tracker data never leaves your device.{' '}
+              <a href="/about#how-the-tracker-works" class="text-accent hover:underline">
+                How that works
+              </a>
+              .
+            </p>
+          </div>
+        </footer>
+      )
+    }
+
+    <script>
+      // Registers the offline cache. Failure here is not worth surfacing —
+      // the site works fine without it, just not offline.
+      if ('serviceWorker' in navigator) {
+        addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>

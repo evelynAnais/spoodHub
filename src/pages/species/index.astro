@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const species = (await getCollection('species')).sort((a, b) =>
+  a.data.commonName.localeCompare(b.data.commonName),
+);
+
+const DIFFICULTY_TONE = {
+  beginner: 'bg-ok/10 text-ok border-ok/30',
+  intermediate: 'bg-watch/10 text-watch border-watch/30',
+  advanced: 'bg-alert/10 text-alert border-alert/30',
+} as const;
+---
+
+<Base title="Species — spoodTime" description="Care profiles for commonly kept jumping spiders.">
+  <h1 class="text-3xl font-bold">Species</h1>
+  <p class="mt-2 max-w-2xl text-muted">
+    Profiles for jumping spiders commonly kept as pets. Every page is a Markdown file in the
+    repository — corrections and new species are welcome.
+  </p>
+
+  <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+    {
+      species.map((entry) => (
+        <li>
+          <a
+            href={`/species/${entry.id}`}
+            class="block h-full rounded-xl border border-line bg-surface p-5 transition hover:border-accent/50"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h2 class="font-semibold">{entry.data.commonName}</h2>
+                <p class="text-sm italic text-muted">{entry.data.scientificName}</p>
+              </div>
+              <span
+                class:list={[
+                  'shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize',
+                  DIFFICULTY_TONE[entry.data.difficulty],
+                ]}
+              >
+                {entry.data.difficulty}
+              </span>
+            </div>
+
+            <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              <div>
+                <dt class="text-xs text-muted">Adult female</dt>
+                <dd>{entry.data.adultSize.female}</dd>
+              </div>
+              <div>
+                <dt class="text-xs text-muted">Temperament</dt>
+                <dd class="capitalize">{entry.data.temperament}</dd>
+              </div>
+              <div>
+                <dt class="text-xs text-muted">Temperature</dt>
+                <dd>
+                  {entry.data.temperatureC.min}–{entry.data.temperatureC.max} °C
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs text-muted">Humidity</dt>
+                <dd>
+                  {entry.data.humidityPct.min}–{entry.data.humidityPct.max}%
+                </dd>
+              </div>
+            </dl>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>
