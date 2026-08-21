@@ -1,0 +1,99 @@
+---
+/**
+ * The path from "animal" down to one particular spider on your shelf.
+ *
+ * Rendered as a vertical ladder rather than a branching tree because a tree
+ * with eight levels is unreadable on a phone. Each rung names the rank, the
+ * group, and what else lives at that level — which is the part that actually
+ * builds intuition.
+ */
+
+const RUNGS = [
+  {
+    rank: 'Phylum',
+    name: 'Arthropoda',
+    plain: 'Jointed legs, hard exoskeleton, molts to grow',
+    alsoHere: 'Insects, crustaceans, millipedes, arachnids',
+  },
+  {
+    rank: 'Class',
+    name: 'Arachnida',
+    plain: 'Eight legs, two body sections, no antennae, no wings',
+    alsoHere: 'Scorpions, mites, ticks, harvestmen',
+  },
+  {
+    rank: 'Order',
+    name: 'Araneae',
+    plain: 'The spiders — silk glands and venom-injecting fangs',
+    alsoHere: 'Every spider there is, ~53,500 species',
+  },
+  {
+    rank: 'Infraorder',
+    name: 'Araneomorphae',
+    plain: '"True spiders" — fangs that pinch together sideways',
+    alsoHere: 'Orb weavers, wolf spiders, house spiders. Tarantulas are NOT here',
+  },
+  {
+    rank: 'Family',
+    name: 'Salticidae',
+    plain: 'Jumping spiders — acute vision, no prey-catching web',
+    alsoHere: '~695 genera, ~6,950 species. The largest spider family',
+  },
+  {
+    rank: 'Genus',
+    name: 'Phidippus',
+    plain: 'Large, stout, mostly North American jumpers',
+    alsoHere: 'Evarcha, Salticus, Habronattus — all jumping spiders too',
+  },
+  {
+    rank: 'Species',
+    name: 'Phidippus regius',
+    plain: 'The regal jumping spider',
+    alsoHere: 'P. audax, P. otiosus — same genus, different species',
+    leaf: true,
+  },
+];
+---
+
+<ol class="my-6 space-y-0">
+  {
+    RUNGS.map((rung, i) => (
+      <li class="relative flex gap-4 pb-5 last:pb-0">
+        {/* connector */}
+        {i < RUNGS.length - 1 && (
+          <span
+            aria-hidden="true"
+            class="absolute top-3 bottom-0 left-[7px] w-px bg-line"
+          />
+        )}
+        <span
+          aria-hidden="true"
+          class:list={[
+            'relative z-10 mt-1.5 size-[15px] shrink-0 rounded-full border-2',
+            rung.leaf
+              ? 'border-accent bg-accent'
+              : 'border-line bg-surface',
+          ]}
+        />
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-baseline gap-x-2">
+            <span class="text-xs font-medium tracking-wide text-muted uppercase">
+              {rung.rank}
+            </span>
+            <span
+              class:list={[
+                'font-semibold',
+                rung.leaf ? 'text-accent' : '',
+                rung.rank === 'Genus' || rung.rank === 'Species' ? 'italic' : '',
+              ]}
+            >
+              {rung.name}
+            </span>
+          </div>
+          <p class="mt-0.5 text-sm">{rung.plain}</p>
+          <p class="mt-0.5 text-xs text-muted">Also here: {rung.alsoHere}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>

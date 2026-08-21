@@ -188,7 +188,7 @@ test('a sealed retreat outranks a recent rehouse', () => {
   assert.equal(result.status, 'in-premolt');
 });
 
-test('pre-molt behaviour alongside a rehouse tips it back to pre-molt', () => {
+test('pre-molt behavior alongside a rehouse tips it back to pre-molt', () => {
   const events = [rehouse(8), feed(6, false), feed(3, false), behavior(2, 'webbing')];
   const result = assessMolt(spider({ instar: 5 }), events, TODAY);
   assert.equal(result.status, 'in-premolt');

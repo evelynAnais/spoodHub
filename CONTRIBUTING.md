@@ -41,8 +41,9 @@ humidityPct:
   max: 70
 typicalMoltIntervalDays: 35
 sources:
-  - label: World Spider Catalog — Phidippus regius
-    url: https://wsc.nmbe.ch/species/44450
+  - label: World Spider Catalog — Phidippus regius (C. L. Koch, 1846)
+    url: https://wsc.nmbe.ch/species/31858/Phidippus_regius
+    kind: database
 updated: 2026-08-18
 ---
 
@@ -67,7 +68,8 @@ Everything below the dashes is ordinary Markdown, and becomes the body of the pa
 | `typicalMoltIntervalDays` | no | Rough guide; the tracker prefers a spider's own history |
 | `heroImage` | no | |
 | `imageCredit` | no | Required if you add an image |
-| `sources` | no | List of `{ label, url }` — please add them |
+| `sources` | **yes** | At least one `{ label, url, kind }` — see below |
+| `tips` | no | Firsthand observations, `{ text, by, context }` — see below |
 | `contributors` | no | Add yourself |
 | `updated` | yes | `YYYY-MM-DD` |
 
@@ -109,7 +111,8 @@ sources:
 | `paper` | Peer-reviewed research | Peer-reviewed (green) |
 | `book` | Published reference texts | Book (green) |
 | `database` | World Spider Catalog, araneae, GBIF | Database (blue) |
-| `care-sheet` | Published care sheets — the default | Care sheet (grey) |
+| `institution` | Museum, university or scientific body material | Museum / university (blue) |
+| `care-sheet` | Published care sheets from a keeper or shop — the default | Care sheet (gray) |
 | `community` | Forum threads, keeper groups, wikis | Keeper community (amber) |
 
 `community` is a legitimate thing to cite. Much of practical husbandry has never been formally
@@ -133,7 +136,7 @@ tips:
     context: Two P. regius females, over about a year
 ```
 
-Tips render in a separate "From keepers" block, attributed to you and explicitly labelled as
+Tips render in a separate "From keepers" block, attributed to you and explicitly labeled as
 individual experience rather than established fact. This is not a lesser category — firsthand
 observation is often the only information that exists on a topic. It is just a *different* kind
 of claim than the body of a guide makes, and readers deserve to see which is which.
@@ -162,10 +165,26 @@ Contributions to the tracker are welcome too, with a few things worth knowing:
 - **`src/lib/types.ts` must not import Dexie.** It is deliberately free of it so the pre-molt
   rules can be unit-tested in plain Node.
 - **The pre-molt rules have tests.** If you change `src/lib/premolt.ts`, run `npm test` and add
-  a case for the behaviour you changed.
+  a case for the behavior you changed.
 - **Every record needs a UUID and `createdAt` / `updatedAt`.** Sync later depends on it.
 - **Tailwind class names must be written out in full.** Anything built by string concatenation
   at runtime will not be generated.
+- **Mind inline whitespace in `.astro` templates.** Astro collapses the newline between inline
+  text and an element, so putting a link on its own line silently eats the space around it:
+
+  ```astro
+  <!-- renders as "the specifics?Browse the guides" -->
+  Ready for the specifics?
+  <a href="/species">Browse the guides</a>
+
+  <!-- correct -->
+  Ready for the specifics?{' '}
+  <a href="/species">Browse the guides</a>
+  ```
+
+  To check the whole site after editing templates:
+  `grep -roh '[a-zA-Z?,.:]<a href="/' dist --include=index.html` should return nothing.
+  This does not affect the Markdown care guides — only `.astro` pages.
 
 Before opening a PR:
 

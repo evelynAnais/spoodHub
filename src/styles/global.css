@@ -3,7 +3,7 @@
 
 /* Tokens are declared as plain CSS variables below, then mapped into Tailwind's
    theme with `@theme inline` so utilities like `bg-surface` / `text-muted` work
-   while still switching automatically with the visitor's colour scheme. */
+   while still switching automatically with the visitor's color scheme. */
 @theme inline {
   --color-bg: var(--c-bg);
   --color-surface: var(--c-surface);
@@ -73,6 +73,50 @@ body {
   textarea {
     font-size: 16px; /* stops iOS Safari zooming on focus */
   }
+}
+
+/* Auto-generated glossary links.
+   Deliberately quieter than a normal link: they keep the body text color and
+   carry a dotted underline instead. A reader scanning a guide should see the
+   prose, not a trail of blue words — but the definition is one click away when
+   an unfamiliar term stops them. */
+.glossary-link {
+  color: inherit;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--c-muted);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.glossary-link:hover,
+.glossary-link:focus-visible {
+  color: var(--c-accent);
+  text-decoration-color: var(--c-accent);
+}
+
+/* Markdown tables in the care guides wrap instead of pushing the page
+   sideways. A tight column on a phone is readable; a table that scrolls
+   horizontally inside a scrolling page is not. Code blocks are exempt —
+   wrapping code mid-token is worse than scrolling it. */
+.prose :where(table) {
+  width: 100%;
+  table-layout: auto;
+  font-size: 0.9em;
+}
+
+.prose :where(th, td) {
+  word-break: break-word;
+  hyphens: auto;
+  vertical-align: top;
+  padding-inline: 0.5rem;
+}
+
+.prose :where(th:first-child, td:first-child) {
+  padding-inline-start: 0;
+}
+
+.prose :where(th:last-child, td:last-child) {
+  padding-inline-end: 0;
 }
 
 .prose {

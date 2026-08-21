@@ -146,7 +146,7 @@ export default function QuickLog() {
 
           <div className="grid grid-cols-2 gap-2 pt-2">
             <Button onClick={() => setExpanded('molt')}>Log a molt</Button>
-            <Button onClick={() => setExpanded('behavior')}>Log behaviour</Button>
+            <Button onClick={() => setExpanded('behavior')}>Log behavior</Button>
           </div>
 
           <div className="pt-1 text-center">

@@ -17,7 +17,7 @@ import { Button, Field, inputClass } from './ui';
 const EVENT_TABS: { type: EventType; label: string }[] = [
   { type: 'feed', label: 'Feeding' },
   { type: 'molt', label: 'Molt' },
-  { type: 'behavior', label: 'Behaviour' },
+  { type: 'behavior', label: 'Behavior' },
   { type: 'rehouse', label: 'Rehouse' },
   { type: 'health', label: 'Health' },
   { type: 'note', label: 'Note' },

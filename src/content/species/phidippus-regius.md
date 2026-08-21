@@ -36,14 +36,14 @@ why they became the beginner species.
 ## Appearance
 
 Adult males are black with a crisp white band across the front of the abdomen and white spots
-behind it, plus iridescent green or blue chelicerae. Females are far more variable — grey,
+behind it, plus iridescent green or blue chelicerae. Females are far more variable — gray,
 tan, orange, or brown, sometimes with a strong apricot cast. The two are hard to tell apart
 before roughly the fifth instar; after that, males develop noticeably longer, more robust
 pedipalps that look like boxing gloves.
 
 ## Temperament
 
-Bold, in the literal behavioural sense. They tend to approach rather than flee, will track
+Bold, in the literal behavioral sense. They tend to approach rather than flee, will track
 movement across a room, and often walk onto a hand offered in front of them. They are still
 capable of a startled leap, so any handling should happen low over a soft surface.
 
@@ -54,7 +54,7 @@ medically significant to humans.
 
 - **Space matters more than most people expect.** A vertical enclosure of at least 20 × 20 × 30 cm
   suits an adult. They hunt by stalking and pouncing, and a cramped enclosure removes the
-  behaviour that makes them interesting to keep.
+  behavior that makes them interesting to keep.
 - **Ventilation over humidity.** Regals come from a warm but well-ventilated environment.
   Stagnant, damp air causes far more deaths in captivity than dryness does.
 - **They need to see.** Salticids are visual hunters with excellent eyesight. A bright

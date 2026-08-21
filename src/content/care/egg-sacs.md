@@ -16,16 +16,7 @@ sources:
   - label: World Spider Catalog — Salticidae genus list
     url: https://wsc.nmbe.ch/genlist/83/Salticidae
     kind: database
-  - label: Arachnoboards — keeper discussion on infertile egg sacs in true spiders
-    url: https://arachnoboards.com/threads/do-true-spiders-specifically-agelenopsis-sp-lay-infertile-eggs.312829/
-    kind: community
-tips:
-  - text: >-
-      An egg sac in the enclosure corner is much easier to check on than one built into the lid.
-      Giving her a piece of cork bark low down before she looks gravid seems to make her choose
-      it, which means you are not disturbing her every time you open the enclosure.
-    by: (example — replace me)
-    context: One P. regius female, two sacs
+tips: []
 updated: 2026-08-19
 ---
 
@@ -44,7 +35,7 @@ is guarded just as fiercely, and costs her the same effort.
 
 There is a second route to a surprise sac, and it is the more common one for a wild-caught
 spider. After mating, a female stores sperm in her **spermathecae** — paired internal
-receptacles — and can draw on it later. The gap between mating and fertilising eggs can run to
+receptacles — and can draw on it later. The gap between mating and fertilizing eggs can run to
 months. So a female caught outdoors as an adult may produce a fertile sac long after arriving in
 your care, with no male anywhere in the picture.
 
@@ -78,7 +69,7 @@ The other strong signal is where she is. A molting spider is sealed *inside*. A 
 eggs is typically outside the sac or wrapped around it, and will be far more defensive than
 usual about the enclosure being opened.
 
-## Recognising a gravid female
+## Recognizing a gravid female
 
 Before a sac appears there are usually a few weeks of warning:
 

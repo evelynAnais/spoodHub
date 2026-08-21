@@ -127,7 +127,7 @@ export function assessMolt(
           .slice(0, 10)
       : null;
 
-  // Pre-molt behaviour tags seen in the last two weeks.
+  // Pre-molt behavior tags seen in the last two weeks.
   const recentPremoltTags = new Set<string>();
   for (const event of behaviors) {
     if (daysBetween(new Date(event.at), today) > 14) continue;
@@ -199,7 +199,7 @@ export function assessMolt(
   // the move than a molt — and the wrong call here tells a keeper to stop
   // feeding a healthy, merely unsettled spider.
   //
-  // Pre-molt behaviour tags or a longer streak tip it back the other way, so
+  // Pre-molt behavior tags or a longer streak tip it back the other way, so
   // both send this on to the pre-molt branches below.
   if (rehouseExplainsRefusals && recentPremoltTags.size === 0 && refusalStreak <= 3) {
     reasons.push(
@@ -246,7 +246,7 @@ export function assessMolt(
   // Being overdue on the calendar is deliberately not sufficient on its own.
   // A spider that is still taking prey readily is not in pre-molt however far
   // past the expected interval it is — those intervals are rough and swing
-  // widely with temperature, so without a behavioural signal to corroborate
+  // widely with temperature, so without a behavioral signal to corroborate
   // them this would just nag about healthy, hungry spiders.
   const hasBehavioralSignal = refusalStreak >= 1 || recentPremoltTags.size > 0;
 
@@ -319,7 +319,7 @@ export function assessMolt(
   };
 }
 
-/** Colour token + label used by the badge component. */
+/** Color token + label used by the badge component. */
 export const STATUS_META: Record<MoltStatus, { label: string; tone: string }> = {
   'post-molt': { label: 'Just molted', tone: 'info' },
   'in-premolt': { label: 'Pre-molt', tone: 'alert' },

@@ -1,0 +1,256 @@
+---
+import AnatomyDiagram from '../components/AnatomyDiagram.astro';
+import Glossary from '../components/Glossary.astro';
+import SourcesAndTips from '../components/SourcesAndTips.astro';
+import TaxonomyLadder from '../components/TaxonomyLadder.astro';
+import Base from '../layouts/Base.astro';
+
+const sources = [
+  {
+    label: 'World Spider Catalog, Natural History Museum Bern — current spider taxonomy and totals',
+    url: 'https://wsc.nmbe.ch/',
+    kind: 'database' as const,
+  },
+  {
+    label: 'Burke Museum — Spider Myths: "Spiders are insects"',
+    url: 'https://www.burkemuseum.org/collections-and-research/biology/arachnology-and-entomology/spider-myths/myth-spiders-are-insects',
+    kind: 'institution' as const,
+  },
+  {
+    label: 'Museum of New Zealand Te Papa Tongarewa — What is a bug? Insects, arachnids and myriapods',
+    url: 'https://tepapa.govt.nz/discover-collections/read-watch-play/science-and-nature/spiders-and-insects/your-bug-questions/what',
+    kind: 'institution' as const,
+  },
+  {
+    label: 'araneae — Spiders of Europe, identification and taxonomy',
+    url: 'https://araneae.nmbe.ch/',
+    kind: 'database' as const,
+  },
+];
+---
+
+<Base
+  title="Where jumping spiders fit — spoodHub"
+  description="A plain-language guide to how spiders are classified, why they are not insects or bugs, and where jumping spiders sit among them."
+>
+  <a href="/species" class="text-sm text-accent hover:underline">← All species</a>
+
+  <header class="mt-4">
+    <h1 class="text-3xl font-bold">Where jumping spiders fit</h1>
+    <p class="mt-3 max-w-2xl text-lg text-muted">
+      What a jumping spider actually is, why it is not a bug or an insect, and how the names on
+      the species pages here relate to each other.
+    </p>
+  </header>
+
+  <section class="mt-12">
+    <h2 class="text-2xl font-semibold">Is a spider a bug?</h2>
+    <p class="mt-3 text-muted">
+      No — twice over, depending on how strict you want to be.
+    </p>
+    <p class="mt-3 text-muted">
+      <strong class="text-fg">A "bug", strictly speaking, is a very specific thing:</strong> an
+      insect in the order Hemiptera, with piercing-sucking mouthparts shaped into a beak. Aphids,
+      cicadas, shield bugs and bed bugs are true bugs. By that definition a beetle is not a bug,
+      a butterfly is not a bug, and a spider is nowhere close.
+    </p>
+    <p class="mt-3 text-muted">
+      <strong class="text-fg">A spider is not an insect either.</strong> Both are arthropods, but
+      they part company above that. The Burke Museum puts the distance well: spiders are
+      <em>"as distant from insects as birds are from fish."</em> The two lineages separated more
+      than 500 million years ago.
+    </p>
+    <p class="mt-3 text-muted">
+      In everyday speech "bug" just means "small thing with legs", and nobody needs correcting at
+      a dinner party. But on a site about spider care the distinction earns its keep, because it
+      is why insect advice — insecticides especially — does not transfer.
+    </p>
+
+    <AnatomyDiagram />
+
+    {/* No min-width and no overflow wrapper: cells wrap instead of the table
+        scrolling sideways. Text is kept short enough to survive a narrow phone. */}
+    <table class="mt-4 w-full table-fixed border-collapse text-xs sm:text-sm">
+      <thead>
+        <tr class="border-b border-line text-left">
+          <th class="w-[30%] py-2 pr-2 font-medium sm:pr-4"></th>
+          <th class="w-[35%] py-2 pr-2 font-medium sm:pr-4">Insect</th>
+          <th class="w-[35%] py-2 font-medium">Spider</th>
+        </tr>
+      </thead>
+      <tbody class="text-muted [word-break:break-word]">
+        {
+          [
+            ['Body parts', '3 — head, thorax, abdomen', '2 — cephalothorax, abdomen'],
+            ['Legs', '6', '8'],
+            ['Antennae', '2', 'None'],
+            ['Eyes', '2 compound', 'Usually 8 simple'],
+            ['Wings', '4, 2, or none', 'Never'],
+            ['Abdomen', 'Segmented', 'Unsegmented'],
+            ['Silk', 'Some, from the mouth', 'From rear spinnerets'],
+          ].map(([label, insect, spider]) => (
+            <tr class="border-b border-line/60 align-top">
+              <td class="py-2 pr-2 font-medium text-fg sm:pr-4">{label}</td>
+              <td class="py-2 pr-2 sm:pr-4">{insect}</td>
+              <td class="py-2">{spider}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-2xl font-semibold">From "animal" down to your spider</h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      Classification is a set of nested boxes, each one narrower than the last. Here is the whole
+      path for a regal jumping spider — the species most people in this hobby keep.
+    </p>
+
+    <TaxonomyLadder />
+
+    <p class="mt-2 text-sm text-muted">
+      Totals from the World Spider Catalog, which is revised constantly — roughly three new
+      species are described every day, so treat these as approximate. Figures here are as of
+      early 2026.
+    </p>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-2xl font-semibold">The two kinds of spider</h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      The split that matters most in the pet hobby happens at the infraorder level, and it comes
+      down to which way the fangs move.
+    </p>
+
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-accent/40 bg-accent/5 p-5">
+        <h3 class="font-semibold">Araneomorphae</h3>
+        <p class="text-xs text-muted">"True spiders" — the vast majority</p>
+        <p class="mt-3 text-sm">
+          Fangs point toward each other and <strong>pinch sideways</strong>, like a pair of
+          tongs. Generally smaller, shorter-lived, and faster to mature.
+        </p>
+        <p class="mt-3 text-sm text-muted">
+          Jumping spiders, orb weavers, wolf spiders, house spiders — and everything on this
+          site.
+        </p>
+      </div>
+      <div class="rounded-xl border border-line bg-surface p-5">
+        <h3 class="font-semibold">Mygalomorphae</h3>
+        <p class="text-xs text-muted">Tarantulas and their relatives</p>
+        <p class="mt-3 text-sm">
+          Fangs point straight down and <strong>strike in parallel</strong>, like a pickaxe.
+          Often much larger and dramatically longer-lived — some females reach 20–30 years.
+        </p>
+        <p class="mt-3 text-sm text-muted">
+          Tarantulas (family Theraphosidae), trapdoor spiders, funnel-webs.
+        </p>
+      </div>
+    </div>
+
+    <p class="mt-5 text-muted">
+      So a tarantula is a spider, but it is not a close relative of a jumping spider — the two
+      sit on different branches, and almost no husbandry advice transfers between them. A care
+      sheet written for a tarantula is not a starting point for a jumping spider.
+    </p>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-2xl font-semibold">Genus, species, and why it matters here</h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      Every species has a two-part name: the <strong class="text-fg">genus</strong> first,
+      capitalised, then the <strong class="text-fg">species</strong>, lowercase. Both go in
+      italics. So <em>Phidippus regius</em> is the species <em>regius</em> within the genus
+      <em>Phidippus</em>.
+    </p>
+
+    <div class="mt-5 rounded-xl border border-line bg-surface p-5">
+      <h3 class="font-semibold">A worked example from this site</h3>
+      <p class="mt-2 text-sm text-muted">
+        The sleep guide cites a study done on <em>Evarcha arcuata</em>, while you probably keep
+        <em>Phidippus regius</em>. Both are jumping spiders — same family, Salticidae. But they
+        are different <em>genera</em>, roughly the distance between a lynx and a housecat: close
+        enough that shared biology is a fair expectation, far enough that it is an expectation
+        rather than a finding.
+      </p>
+      <p class="mt-2 text-sm text-muted">
+        That is why guides here name the species a claim came from. "Jumping spiders do X" hides
+        a lot when the family has nearly 7,000 species in it.
+      </p>
+    </div>
+
+    <h3 class="mt-8 text-lg font-semibold">What about subspecies?</h3>
+    <p class="mt-2 text-muted">
+      Rarely used in spiders. Modern arachnology has mostly either promoted old subspecies to
+      full species or folded them into one — so for almost everything you will meet in the hobby,
+      the two-part name is the whole story.
+    </p>
+    <p class="mt-3 text-muted">
+      What you <em>will</em> meet is <strong class="text-fg">trade names and locality names</strong>,
+      which are not taxonomy at all. Sellers use labels like "Bahia" or "Florida orange" for
+      color forms of the same species. They can be genuinely useful for knowing what a spider
+      will look like, but they carry no scientific status and are not consistent between sellers.
+    </p>
+    <p class="mt-3 text-muted">
+      Names also change. Species get moved between genera as relationships are worked out, which
+      is why the World Spider Catalog is the reference to check rather than an older care sheet.
+    </p>
+  </section>
+
+  <section class="mt-14">
+    <h2 class="text-2xl font-semibold">What makes a jumping spider a jumping spider</h2>
+    <p class="mt-3 max-w-2xl text-muted">
+      Salticidae is the largest spider family — around 6,950 species in roughly 695 genera,
+      nearly one in eight of all spiders. What sets them apart:
+    </p>
+    <ul class="mt-4 space-y-3 text-muted">
+      <li class="flex gap-3">
+        <span class="text-accent">▪</span>
+        <span>
+          <strong class="text-fg">Exceptional eyesight.</strong> The two huge forward-facing eyes
+          give acute, image-forming vision unmatched among spiders of their size. They see you
+          looking at them.
+        </span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-accent">▪</span>
+        <span>
+          <strong class="text-fg">They stalk instead of trapping.</strong> No prey-catching web.
+          They hunt by sight, stalk, and pounce — which is why enclosure layout and light matter
+          so much more than they would for a web-builder.
+        </span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-accent">▪</span>
+        <span>
+          <strong class="text-fg">Silk is safety equipment, not a trap.</strong> A dragline is
+          anchored before jumping, and silk is used for resting retreats and egg sacs.
+        </span>
+      </li>
+      <li class="flex gap-3">
+        <span class="text-accent">▪</span>
+        <span>
+          <strong class="text-fg">Hydraulic legs.</strong> Jumps are powered by body fluid
+          pressure rather than muscle alone.
+        </span>
+      </li>
+    </ul>
+
+    <div class="mt-8 rounded-xl border border-line bg-raised p-5">
+      {/* The {' '} are load-bearing: Astro collapses the newline between inline
+          text and an element, so without them this renders as
+          "specifics?Browse the species profilesor start with the…" */}
+      <p class="text-sm text-muted">
+        Ready for the specifics?{' '}
+        <a href="/species" class="text-accent hover:underline">Browse the species profiles</a>{' '}
+        or start with the{' '}
+        <a href="/care" class="text-accent hover:underline">care guides</a>.
+      </p>
+    </div>
+  </section>
+
+  <Glossary />
+
+  <SourcesAndTips sources={sources} tips={[]} />
+</Base>

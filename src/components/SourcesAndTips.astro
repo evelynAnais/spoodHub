@@ -2,7 +2,7 @@
 interface Source {
   label: string;
   url: string;
-  kind: 'paper' | 'book' | 'database' | 'care-sheet' | 'community';
+  kind: 'paper' | 'book' | 'database' | 'institution' | 'care-sheet' | 'community';
 }
 
 /** Ordered strongest first — sources sort by this so the best evidence leads. */
@@ -10,14 +10,16 @@ const KIND_RANK: Record<Source['kind'], number> = {
   paper: 0,
   book: 1,
   database: 2,
-  'care-sheet': 3,
-  community: 4,
+  institution: 3,
+  'care-sheet': 4,
+  community: 5,
 };
 
 const KIND_LABEL: Record<Source['kind'], string> = {
   paper: 'Peer-reviewed',
   book: 'Book',
   database: 'Database',
+  institution: 'Museum / university',
   'care-sheet': 'Care sheet',
   community: 'Keeper community',
 };
@@ -26,6 +28,7 @@ const KIND_TONE: Record<Source['kind'], string> = {
   paper: 'bg-ok/10 text-ok border-ok/30',
   book: 'bg-ok/10 text-ok border-ok/30',
   database: 'bg-info/10 text-info border-info/30',
+  institution: 'bg-info/10 text-info border-info/30',
   'care-sheet': 'bg-raised text-muted border-line',
   community: 'bg-watch/10 text-watch border-watch/30',
 };

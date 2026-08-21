@@ -45,7 +45,7 @@ airflow.
 
 ## Substrate
 
-A few centimetres of coconut fibre, topsoil, or a coco/sphagnum mix. Its job is to hold a
+A few centimeters of coconut fibre, topsoil, or a coco/sphagnum mix. Its job is to hold a
 little moisture and buffer humidity, not to be burrowed in. Keep it lightly damp at the bottom
 and dry at the surface.
 
@@ -55,7 +55,7 @@ and dry at the surface.
   A spider with nowhere good to build will web into a corner, and corners are awkward to work
   around when you need to open the enclosure.
 - **Open flight paths.** Leave clear space to jump across. A densely packed enclosure prevents
-  the hunting behaviour that makes them worth watching.
+  the hunting behavior that makes them worth watching.
 - **Nothing sharp or absorbent-and-mouldy.** Avoid untreated sponges and anything that stays
   soaked.
 

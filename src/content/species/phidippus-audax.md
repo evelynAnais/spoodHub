@@ -37,7 +37,7 @@ themselves rather than buys.
 
 Black with a white or orange triangular marking on the upper abdomen and two smaller spots
 below it. Juveniles usually have orange markings that fade toward white with each molt, though
-plenty of adults keep some colour. The chelicerae are a strong iridescent green.
+plenty of adults keep some color. The chelicerae are a strong iridescent green.
 
 ## Temperament
 

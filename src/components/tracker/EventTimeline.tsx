@@ -27,7 +27,7 @@ function describe(event: TrackEvent): { title: string; tone: string } {
       };
     case 'behavior':
       return {
-        title: (event.behaviors ?? []).map(humanizeTag).join(', ') || 'Behaviour',
+        title: (event.behaviors ?? []).map(humanizeTag).join(', ') || 'Behavior',
         tone: 'muted',
       };
     case 'rehouse':

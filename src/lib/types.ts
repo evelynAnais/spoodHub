@@ -9,7 +9,7 @@ export type Sex = 'female' | 'male' | 'unknown';
 
 export type EventType = 'feed' | 'molt' | 'rehouse' | 'behavior' | 'health' | 'note';
 
-/** Behaviour tags that feed into the pre-molt heuristic. */
+/** Behavior tags that feed into the pre-molt heuristic. */
 export const PREMOLT_BEHAVIORS = [
   'webbing',
   'sealed-retreat',

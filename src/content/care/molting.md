@@ -1,6 +1,6 @@
 ---
 title: Molting
-summary: How to recognise pre-molt, what to do (mostly nothing), and why an interrupted molt is the most avoidable death in the hobby.
+summary: How to recognize pre-molt, what to do (mostly nothing), and why an interrupted molt is the most avoidable death in the hobby.
 order: 3
 tags:
   - molting
@@ -16,7 +16,7 @@ updated: 2026-08-18
 A spider grows by shedding its exoskeleton. It is the most dangerous routine event in its life
 and the point at which keeper interference does the most damage.
 
-## Recognising pre-molt
+## Recognizing pre-molt
 
 No single sign is conclusive. Several together are.
 
@@ -25,7 +25,7 @@ No single sign is conclusive. Several together are.
 - **Heavy webbing.** The retreat gets noticeably thicker and denser than usual.
 - **Sealing the retreat.** The spider closes itself in completely. This is the strongest sign
   there is — at this point a molt is imminent or already underway.
-- **Dulled colours.** Markings look washed out or greyish as the new cuticle forms underneath.
+- **Dulled colors.** Markings look washed out or grayish as the new cuticle forms underneath.
 - **A large, tight abdomen** without recent feeding to explain it.
 - **Lethargy** and reduced interest in movement outside the enclosure.
 
@@ -68,7 +68,7 @@ The new exoskeleton is soft and the fangs need to harden before the spider can e
 
 - **Wait 3–5 days before offering food.** Larger species take longer. Offering prey to a
   soft-fanged spider risks damaging the fangs.
-- **Expect brighter colours** — post-molt is when markings look best.
+- **Expect brighter colors** — post-molt is when markings look best.
 - **Water is fine** immediately.
 
 ## Molt intervals

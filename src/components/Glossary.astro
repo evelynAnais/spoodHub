@@ -1,0 +1,37 @@
+---
+import { GLOSSARY_GROUPS, glossaryAnchor } from '../lib/glossary';
+
+/**
+ * Renders the shared glossary. The term data lives in `lib/glossary.ts` because
+ * the rehype auto-linker reads the same list — so a term added there is both
+ * defined here and linked from every guide that mentions it.
+ */
+---
+
+<section id="glossary" class="mt-14 scroll-mt-8">
+  <h2 class="text-2xl font-semibold">Glossary</h2>
+  <p class="mt-3 max-w-2xl text-muted">
+    The words the care guides keep using. Nothing here is jargon for its own sake — most of these
+    name a body part you will actually be looking at. Each guide links the first time it mentions
+    one of these words back to this list.
+  </p>
+
+  {
+    GLOSSARY_GROUPS.map((group) => (
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold">{group.heading}</h3>
+        <dl class="mt-3 space-y-4">
+          {group.terms.map((entry) => (
+            <div id={glossaryAnchor(entry.term)} class="scroll-mt-8 border-l-2 border-line pl-4">
+              <dt class="flex flex-wrap items-baseline gap-x-2">
+                <span class="font-semibold">{entry.term}</span>
+                {entry.also && <span class="text-xs text-muted">({entry.also})</span>}
+              </dt>
+              <dd class="mt-1 text-sm text-muted">{entry.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    ))
+  }
+</section>

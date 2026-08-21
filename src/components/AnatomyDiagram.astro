@@ -1,0 +1,137 @@
+---
+/**
+ * Schematic insect vs. spider body plan.
+ *
+ * Stacked vertically, one creature per row, with the labels as HTML rather
+ * than SVG text. Keeping text out of the SVG is what lets this reflow on a
+ * narrow screen — text baked into a viewBox forces a minimum width and makes
+ * the whole figure scroll sideways on a phone.
+ *
+ * Drawn inline so it inherits the page's color tokens and stays legible in
+ * both themes. Deliberately schematic: this is about counting body parts and
+ * legs, not about looking like a real animal.
+ */
+
+const insectLabels = [
+  ['Antennae', 'Two — spiders have none'],
+  ['Head', 'Carries the antennae and compound eyes'],
+  ['Thorax', 'All six legs attach here'],
+  ['Abdomen', 'Segmented'],
+];
+
+const spiderLabels = [
+  ['Pedipalps', 'Mouthparts, not legs — how you sex an adult'],
+  ['Cephalothorax', 'All eight legs and all eight eyes attach here'],
+  ['Abdomen', 'Unsegmented, and where the spinnerets are'],
+];
+---
+
+<figure class="my-6 rounded-xl border border-line bg-surface p-4 sm:p-5">
+  <!-- ── INSECT ── -->
+  <div class="flex items-center gap-4 sm:gap-6">
+    <svg
+      viewBox="0 0 140 200"
+      role="img"
+      aria-labelledby="insect-title insect-desc"
+      class="w-20 shrink-0 sm:w-28"
+    >
+      <title id="insect-title">Insect body plan</title>
+      <desc id="insect-desc">
+        Three body sections stacked vertically, six legs attached to the middle section, and two
+        antennae on the head.
+      </desc>
+      <g stroke="var(--c-fg)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85">
+        <path d="M60 32 L42 8" />
+        <path d="M80 32 L98 8" />
+        <path d="M50 78 L14 104" />
+        <path d="M56 84 L30 126" />
+        <path d="M62 88 L54 134" />
+        <path d="M90 78 L126 104" />
+        <path d="M84 84 L110 126" />
+        <path d="M78 88 L86 134" />
+      </g>
+      <ellipse cx="70" cy="36" rx="19" ry="16" fill="var(--c-accent)" opacity="0.35"
+        stroke="var(--c-fg)" stroke-width="3" />
+      <ellipse cx="70" cy="80" rx="23" ry="21" fill="var(--c-accent)" opacity="0.6"
+        stroke="var(--c-fg)" stroke-width="3" />
+      <ellipse cx="70" cy="142" rx="21" ry="33" fill="var(--c-accent)" opacity="0.35"
+        stroke="var(--c-fg)" stroke-width="3" />
+      <g stroke="var(--c-fg)" stroke-width="1.5" opacity="0.4">
+        <path d="M52 130 H88" /><path d="M50 142 H90" /><path d="M53 154 H87" />
+      </g>
+    </svg>
+
+    <div class="min-w-0 flex-1">
+      <h3 class="font-semibold">Insect</h3>
+      <p class="text-xs text-muted">3 body parts · 6 legs · 2 antennae</p>
+      <dl class="mt-2 space-y-1 text-sm">
+        {
+          insectLabels.map(([term, detail]) => (
+            <div>
+              <dt class="inline font-medium">{term}</dt>
+              <dd class="inline text-muted"> — {detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <hr class="my-5 border-line" />
+
+  <!-- ── SPIDER ── -->
+  <div class="flex items-center gap-4 sm:gap-6">
+    <svg
+      viewBox="0 0 140 200"
+      role="img"
+      aria-labelledby="spider-title spider-desc"
+      class="w-20 shrink-0 sm:w-28"
+    >
+      <title id="spider-title">Spider body plan</title>
+      <desc id="spider-desc">
+        Two body sections, eight legs all attached to the front section, no antennae, and two
+        large forward-facing eyes.
+      </desc>
+      <g stroke="var(--c-fg)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85">
+        <path d="M48 56 L10 30" />
+        <path d="M46 70 L6 62" />
+        <path d="M46 84 L8 100" />
+        <path d="M50 96 L16 130" />
+        <path d="M92 56 L130 30" />
+        <path d="M94 70 L134 62" />
+        <path d="M94 84 L132 100" />
+        <path d="M90 96 L124 130" />
+        <path d="M58 40 L44 16" />
+        <path d="M82 40 L96 16" />
+      </g>
+      <ellipse cx="70" cy="74" rx="24" ry="28" fill="var(--c-accent)" opacity="0.6"
+        stroke="var(--c-fg)" stroke-width="3" />
+      <ellipse cx="70" cy="140" rx="28" ry="34" fill="var(--c-accent)" opacity="0.35"
+        stroke="var(--c-fg)" stroke-width="3" />
+      <circle cx="60" cy="54" r="7" fill="var(--c-fg)" opacity="0.8" />
+      <circle cx="80" cy="54" r="7" fill="var(--c-fg)" opacity="0.8" />
+      <circle cx="49" cy="50" r="3.5" fill="var(--c-fg)" opacity="0.5" />
+      <circle cx="91" cy="50" r="3.5" fill="var(--c-fg)" opacity="0.5" />
+    </svg>
+
+    <div class="min-w-0 flex-1">
+      <h3 class="font-semibold">Spider</h3>
+      <p class="text-xs text-muted">2 body parts · 8 legs · no antennae</p>
+      <dl class="mt-2 space-y-1 text-sm">
+        {
+          spiderLabels.map(([term, detail]) => (
+            <div>
+              <dt class="inline font-medium">{term}</dt>
+              <dd class="inline text-muted"> — {detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+
+  <figcaption class="mt-5 text-xs text-muted">
+    Schematic, not to scale. Note the pedipalps — they are mouthparts rather than a ninth and
+    tenth leg, and their shape is how an adult jumping spider is sexed.
+  </figcaption>
+</figure>

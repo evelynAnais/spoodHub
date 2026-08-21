@@ -26,7 +26,8 @@ const source = z.object({
       'paper', // peer-reviewed research
       'book', // published reference text
       'database', // taxonomic or distribution database
-      'care-sheet', // a published care sheet from a keeper or institution
+      'institution', // museum, university or scientific body's own material
+      'care-sheet', // a published care sheet from a keeper or shop
       'community', // forum consensus, keeper groups — weakest, but honest
     ])
     .default('care-sheet'),
