@@ -14,9 +14,20 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.title,
+  description: d.summary,
+  dateModified: d.updated.toISOString().slice(0, 10),
+  citation: d.sources.map((s) => s.url),
+  isAccessibleForFree: true,
+  keywords: ['jumping spider', 'Salticidae', ...d.tags].join(', '),
+};
 ---
 
-<Base title={`${d.title} — spoodHub`} description={d.summary}>
+<Base title={`${d.title} — jumping spider care — spoodHub`} description={d.summary} schema={schema}>
   <a href="/care" class="text-sm text-accent hover:underline">← All care guides</a>
 
   <header class="mt-4">

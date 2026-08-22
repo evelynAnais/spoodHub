@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # The site has no server and stores no secrets, so the realistic supply-chain
+  # risk is a compromised build-time dependency injecting something into the
+  # static output — which would then run in visitors' browsers and could read
+  # their local tracker database. Keeping dependencies current is the cheap
+  # half of defending against that; the CSP in astro.config.mjs is the other.
+  #
+  # Monthly and grouped, so this stays a useful reminder rather than a chore.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for the routine stuff, so patch bumps do not bury a real one.
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

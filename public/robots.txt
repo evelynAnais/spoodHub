@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# The tracker and quick-log screens are an empty shell until the visitor's own
+# local data loads, so there is nothing there worth indexing.
+Disallow: /track
+Disallow: /log
+
+Sitemap: https://spoodhub.com/sitemap-index.xml

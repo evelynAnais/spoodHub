@@ -16,6 +16,7 @@
   "dependencies": {
     "@astrojs/mdx": "^7.0.6",
     "@astrojs/react": "^6.0.3",
+    "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
@@ -24,6 +25,7 @@
     "dexie-react-hooks": "^4.4.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "rehype-sanitize": "^6.0.0",
     "tailwindcss": "^4.3.3",
     "zod": "^4.4.3"
   },
@@ -31,6 +33,7 @@
     "@astrojs/check": "^0.9.10",
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^26.2.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.125.0"
   }
 }

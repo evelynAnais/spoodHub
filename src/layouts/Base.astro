@@ -6,13 +6,26 @@ interface Props {
   description?: string;
   /** Quick-log is a focused screen — it hides the site chrome. */
   bare?: boolean;
+  /**
+   * Keeps a page out of search results. The tracker and quick-log screens have
+   * nothing useful to index — they are an empty shell until the visitor's own
+   * local data loads — and indexing them would just produce blank results.
+   */
+  noindex?: boolean;
+  /** Optional JSON-LD structured data for this page. */
+  schema?: Record<string, unknown>;
 }
 
 const {
   title,
   description = 'An open jumping spider care reference, with a private feeding and molt tracker that runs entirely on your own device.',
   bare = false,
+  noindex = false,
+  schema,
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
 
 const nav = [
   { href: '/species', label: 'Species' },
@@ -36,9 +49,29 @@ const path = Astro.url.pathname;
     <meta name="apple-mobile-web-app-title" content="spoodHub" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:site_name" content="spoodHub" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {/* Astro hints that this should carry `is:inline`, but directives are not
+        allowed inside an expression block. Left off deliberately: Astro only
+        processes untyped and module scripts, so JSON-LD passes through
+        untouched either way. */}
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
   </head>
   <body class="bg-bg text-fg antialiased">
     {
@@ -97,7 +130,12 @@ const path = Astro.url.pathname;
     <script>
       // Registers the offline cache. Failure here is not worth surfacing —
       // the site works fine without it, just not offline.
-      if ('serviceWorker' in navigator) {
+      //
+      // Skipped in dev: localhost shares an origin with nothing else, so a
+      // service worker registered while developing keeps serving cached pages
+      // after `astro dev` stops, which looks exactly like a server that will
+      // not die. Offline still works in `npm run preview` and in production.
+      if ('serviceWorker' in navigator && import.meta.env.PROD) {
         addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js').catch(() => {});
         });

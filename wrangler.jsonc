@@ -1,0 +1,24 @@
+{
+  // Cloudflare Workers deployment config.
+  //
+  // Cloudflare Pages went into maintenance mode in 2026 and Workers with
+  // static assets is the supported path for new projects, so this site
+  // deploys as a Worker that serves a directory rather than as a Pages site.
+  //
+  // There is no `main` entrypoint: this is a purely static build, so Cloudflare
+  // serves ./dist straight from the edge with no JavaScript of ours running on
+  // the server. That is the whole design — the tracker runs in the visitor's
+  // browser and there is no backend to attack.
+  //
+  // Keeping this in git means the deployment is reproducible and reviewable,
+  // rather than living only in dashboard settings.
+  "name": "spoodhub",
+  "compatibility_date": "2026-08-21",
+
+  "assets": {
+    // Astro's build output. `public/_headers` is copied here at build time and
+    // is read natively by Workers static assets, which is what applies the
+    // CSP and the other security headers.
+    "directory": "./dist"
+  }
+}

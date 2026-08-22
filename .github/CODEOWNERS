@@ -2,12 +2,4 @@
 # path. Everything else — the app, the schemas, CI — should get a look from a
 # maintainer.
 #
-# Replace @REPLACE-WITH-YOUR-GITHUB-USERNAME below once the repo is on GitHub.
-# Until then this file has no effect.
-
-*                       @REPLACE-WITH-YOUR-GITHUB-USERNAME
-
-# Content is the open part. Remove these two lines if you would rather review
-# every content change yourself as well.
-/src/content/species/
-/src/content/care/
+*                       @evelynAnais

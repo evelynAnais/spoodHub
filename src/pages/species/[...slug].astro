@@ -14,9 +14,33 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+
+/**
+ * Structured data. `Article` rather than a biology-specific type because
+ * schema.org has no vocabulary for a husbandry care sheet, and Article is what
+ * search engines actually understand.
+ */
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `${d.commonName} (${d.scientificName}) care guide`,
+  description: `Care profile for ${d.scientificName} — housing, temperature, humidity, feeding and temperament.`,
+  about: {
+    '@type': 'Thing',
+    name: d.scientificName,
+    alternateName: [d.commonName, ...d.aliases],
+  },
+  dateModified: d.updated.toISOString().slice(0, 10),
+  citation: d.sources.map((s) => s.url),
+  isAccessibleForFree: true,
+};
 ---
 
-<Base title={`${d.commonName} — spoodHub`} description={`Care profile for ${d.scientificName}.`}>
+<Base
+  title={`${d.commonName} (${d.scientificName}) care guide — spoodHub`}
+  description={`How to keep ${d.commonName} (${d.scientificName}): enclosure, temperature ${d.temperatureC.min}–${d.temperatureC.max} °C, humidity ${d.humidityPct.min}–${d.humidityPct.max}%, feeding and temperament.`}
+  schema={schema}
+>
   <a href="/species" class="text-sm text-accent hover:underline">← All species</a>
 
   <header class="mt-4">
