@@ -61,7 +61,12 @@ const tip = z.object({
  * attribution — so an image without those details is not publishable, and the
  * schema should refuse it rather than leave it to a reviewer to notice.
  */
-const photo = (image: ImageFn) =>
+/**
+ * Generic over what `image()` returns rather than annotating it as a plain
+ * `z.ZodType`. A widened annotation erases the ImageMetadata type, so `src`
+ * infers as `unknown` and every consumer of `images` fails to typecheck.
+ */
+const photo = <T extends z.ZodType>(image: () => T) =>
   z.object({
     src: image(),
     /** Described for a reader who cannot see it — not just "a spider". */
@@ -72,8 +77,6 @@ const photo = (image: ImageFn) =>
     /** The page the photo came from, so the licence can be checked. */
     sourceUrl: z.url(),
   });
-
-type ImageFn = () => z.ZodType;
 
 const species = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/species' }),
