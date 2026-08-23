@@ -49,7 +49,8 @@ const care = (await getCollection('care')).sort((a, b) => a.data.order - b.data.
               <h3 class="font-semibold">{entry.data.commonName}</h3>
               <p class="text-xs italic text-muted">{entry.data.scientificName}</p>
               <p class="mt-2 text-sm text-muted">
-                {entry.data.difficulty} · {entry.data.temperament}
+                {entry.data.difficulty ?? 'care undocumented'}
+                {entry.data.temperament ? ` · ${entry.data.temperament}` : ''}
               </p>
             </a>
           </li>

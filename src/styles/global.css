@@ -94,6 +94,22 @@ body {
   text-decoration-color: var(--c-accent);
 }
 
+/* Auto-generated links to species profiles. Given a slightly stronger
+   treatment than glossary links — a species name is a destination worth
+   noticing, whereas a glossary term is a definition you only follow when
+   the word is unfamiliar. */
+.species-link {
+  color: var(--c-accent);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.species-link:hover,
+.species-link:focus-visible {
+  text-decoration-style: solid;
+}
+
 /* Markdown tables in the care guides wrap instead of pushing the page
    sideways. A tight column on a phone is readable; a table that scrolls
    horizontally inside a scrolling page is not. Code blocks are exempt —

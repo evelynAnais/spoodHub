@@ -19,6 +19,23 @@ humidityPct:
   min: 50
   max: 70
 typicalMoltIntervalDays: 35
+images:
+  female:
+    src: ../../assets/species/phidippus-regius-female.jpg
+    alt: >-
+      A female regal jumping spider facing the camera, with a bright orange face, pale mottled
+      hairy legs, dark eyelash-like bristles above the eyes and iridescent pink-violet chelicerae
+    credit: spidereyes2020
+    license: CC0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Female_Phidippus_regius_-_51488016945.jpg
+  male:
+    src: ../../assets/species/phidippus-regius-male.jpg
+    alt: >-
+      A male regal jumping spider on a green leaf, black-bodied with white banding on the legs,
+      a white marking across the abdomen and brilliant iridescent green chelicerae
+    credit: spidereyes2020
+    license: CC0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Male_Phidippus_regius_-_51731750953.jpg
 sources:
   - label: World Spider Catalog — Phidippus regius (C. L. Koch, 1846)
     url: https://wsc.nmbe.ch/species/31858/Phidippus_regius

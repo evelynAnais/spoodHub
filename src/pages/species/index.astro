@@ -50,32 +50,42 @@ const DIFFICULTY_TONE = {
               <span
                 class:list={[
                   'shrink-0 rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize',
-                  DIFFICULTY_TONE[entry.data.difficulty],
+                  entry.data.difficulty
+                    ? DIFFICULTY_TONE[entry.data.difficulty]
+                    : 'border-line bg-raised text-muted',
                 ]}
               >
-                {entry.data.difficulty}
+                {entry.data.difficulty ?? 'care undocumented'}
               </span>
             </div>
 
             <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
               <div>
                 <dt class="text-xs text-muted">Adult female</dt>
-                <dd>{entry.data.adultSize.female}</dd>
+                <dd>{entry.data.adultSize?.female ?? '—'}</dd>
               </div>
               <div>
                 <dt class="text-xs text-muted">Temperament</dt>
-                <dd class="capitalize">{entry.data.temperament}</dd>
+                <dd class="capitalize">{entry.data.temperament ?? '—'}</dd>
               </div>
               <div>
                 <dt class="text-xs text-muted">Temperature</dt>
                 <dd>
-                  {entry.data.temperatureC.min}–{entry.data.temperatureC.max} °C
+                  {
+                    entry.data.temperatureC
+                      ? `${entry.data.temperatureC.min}–${entry.data.temperatureC.max} °C`
+                      : '—'
+                  }
                 </dd>
               </div>
               <div>
                 <dt class="text-xs text-muted">Humidity</dt>
                 <dd>
-                  {entry.data.humidityPct.min}–{entry.data.humidityPct.max}%
+                  {
+                    entry.data.humidityPct
+                      ? `${entry.data.humidityPct.min}–${entry.data.humidityPct.max}%`
+                      : '—'
+                  }
                 </dd>
               </div>
             </dl>

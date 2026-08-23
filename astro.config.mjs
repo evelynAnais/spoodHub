@@ -8,6 +8,11 @@ import tailwindcss from '@tailwindcss/vite';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 
 import rehypeGlossary from './src/lib/rehype-glossary.ts';
+import rehypeSpecies from './src/lib/rehype-species.ts';
+import { loadSpeciesIndex } from './src/lib/species-index.ts';
+
+// Read once at config time; the linker only needs names and slugs.
+const speciesIndex = loadSpeciesIndex();
 
 /**
  * Care content arrives by pull request from people we do not know, and Astro
@@ -68,7 +73,17 @@ export default defineConfig({
     // Order matters. Sanitize the contributor's HTML first, then let our own
     // trusted plugin add glossary links — otherwise sanitizing would strip the
     // links we just added.
-    rehypePlugins: [[rehypeSanitize, sanitizeSchema], rehypeGlossary],
+    // Order matters throughout:
+    //   1. sanitize contributor HTML first
+    //   2. link species names — done before the glossary so that a phrase like
+    //      "Phidippus regius" is claimed by the species linker rather than
+    //      being broken up by a glossary term inside it
+    //   3. link glossary terms in whatever text remains
+    rehypePlugins: [
+      [rehypeSanitize, sanitizeSchema],
+      [rehypeSpecies, { species: speciesIndex }],
+      rehypeGlossary,
+    ],
 
     // Off because nothing uses it — no care guide contains a code block, and
     // Astro's default highlighter (Shiki) colors code with inline `style=`

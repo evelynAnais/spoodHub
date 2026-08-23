@@ -82,6 +82,83 @@ Everything below the dashes is ordinary Markdown, and becomes the body of the pa
 | `contributors` | no | Add yourself |
 | `updated` | yes | `YYYY-MM-DD` |
 
+### Species with no published care data
+
+Most of the roughly 7,000 jumping spider species have never been kept or written up. For those,
+declare it explicitly:
+
+```yaml
+careData: undocumented
+```
+
+That makes `adultSize`, `lifespan`, `temperament`, `difficulty`, `temperatureC` and `humidityPct`
+optional, and the page renders a visible **"Husbandry not documented"** notice instead of a grid of
+figures. Omit whichever you cannot source; keep the ones you can — size is often measured even when
+nothing else is.
+
+**This is a declaration, not a shortcut.** Without that line the six fields stay required and the
+build fails. Saying it out loud means a reader can tell "nobody knows" from "nobody bothered".
+
+**An undocumented profile must earn its place.** The build requires one of:
+
+| Route | What proves it | Example |
+| --- | --- | --- |
+| **You keep it** | At least one `tips` entry **and** at least one photo | a wild-caught spider you are raising |
+| **It has been studied** | At least one source with `kind: paper` | *Evarcha arcuata*, *Saitis barbipes* |
+
+A World Spider Catalog entry alone is **not** enough. This is deliberate: without it, anyone could
+generate hundreds of stub profiles from a taxonomic database and this would stop being a keeper's
+care reference and become a species list. If you cannot offer either firsthand experience or
+research, the species does not get a page yet.
+
+### Photos
+
+A profile can carry one photo of each sex. Put the files in `src/assets/species/` and reference
+them relative to the profile:
+
+```yaml
+images:
+  female:
+    src: ../../assets/species/phidippus-regius-female.jpg
+    alt: A female regal jumping spider on a leaf, facing the camera, grey and orange markings
+    credit: Photographer Name
+    license: CC BY-SA 4.0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Example.jpg
+  male:
+    src: ../../assets/species/phidippus-regius-male.jpg
+    alt: A male regal jumping spider, black with white abdominal bands and green chelicerae
+    credit: Photographer Name
+    license: CC BY-SA 4.0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Example2.jpg
+```
+
+**Every field is required if you add a photo at all.** Most usable spider photography is Creative
+Commons and obliges attribution, so an image without a credit, a licence and the page it came from
+is not publishable — and the build rejects it rather than leaving a reviewer to catch it.
+
+Only add photos you have the right to use: your own, or something under a licence that permits it.
+`alt` should describe the spider for someone who cannot see the image, not just say "a spider".
+Photos of both sexes are especially valuable, because jumping spiders are often dramatically
+dimorphic and a keeper trying to sex a spider learns more from two pictures than from any
+description.
+
+### Species get linked automatically
+
+When a care guide mentions a jumping spider that has a profile, the first mention is turned into a
+link to that profile automatically. You do not need to write the link yourself — `Phidippus
+regius`, `P. regius`, and `Regal Jumping Spider` all work.
+
+Two consequences worth knowing:
+
+- **Only species with a profile are linked**, so a mention of something not yet written up stays
+  as plain text rather than becoming a broken link.
+- **If your guide references a jumping spider we do not have a profile for, please add one**, even
+  a short one. That is what keeps the guides connected to each other.
+
+Non-salticids are never linked. The guides also mention *Parasteatoda tepidariorum* (a cobweb
+spider, cited for pedipalp development) and *Drosophila* (prey); neither should point at a species
+profile.
+
 ## Adding a care guide
 
 Create `src/content/care/<topic>.md`:
@@ -181,21 +258,32 @@ Contributions to the tracker are welcome too, with a few things worth knowing:
 - **Tailwind class names must be written out in full.** Anything built by string concatenation
   at runtime will not be generated.
 - **Mind inline whitespace in `.astro` templates.** Astro collapses the newline between inline
-  text and an element, so putting a link on its own line silently eats the space around it:
+  text and an element, so wrapping a line before `<a>`, `<em>`, `<strong>` or `<code>` silently
+  eats the space:
 
   ```astro
-  <!-- renders as "the specifics?Browse the guides" -->
-  Ready for the specifics?
-  <a href="/species">Browse the guides</a>
+  <!-- renders as "spiders are<em>as distant from insects" -->
+  The Burke Museum puts it well: spiders are
+  <em>"as distant from insects as birds are from fish."</em>
 
   <!-- correct -->
-  Ready for the specifics?{' '}
-  <a href="/species">Browse the guides</a>
+  The Burke Museum puts it well: spiders are{' '}
+  <em>"as distant from insects as birds are from fish."</em>
   ```
 
-  To check the whole site after editing templates:
-  `grep -roh '[a-zA-Z?,.:]<a href="/' dist --include=index.html` should return nothing.
-  This does not affect the Markdown care guides — only `.astro` pages.
+  The same applies to a tag immediately followed by an expression:
+  `<strong>Native range:</strong>{' '}` then `{d.nativeRange}`.
+
+  After editing any template, this should return nothing:
+
+  ```sh
+  npm run build
+  grep -rohE '[a-zA-Z0-9,.?;:—)]<(strong|em|code|a)[ >]|</(strong|em|code|a)>[a-zA-Z0-9]' \
+    dist --include=index.html
+  ```
+
+  Ignore hits involving `<span>` — the `↗` external-link markers deliberately carry their own
+  leading space. This does not affect the Markdown care guides, only `.astro` pages.
 
 Before opening a PR:
 
