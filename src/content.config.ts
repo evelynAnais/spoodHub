@@ -53,42 +53,156 @@ const tip = z.object({
   context: z.string().optional(),
 });
 
+/**
+ * A photo plus everything needed to use it lawfully.
+ *
+ * Credit, licence and the page it came from are all required rather than
+ * optional. Most usable spider photography is Creative Commons, which obliges
+ * attribution — so an image without those details is not publishable, and the
+ * schema should refuse it rather than leave it to a reviewer to notice.
+ */
+const photo = (image: ImageFn) =>
+  z.object({
+    src: image(),
+    /** Described for a reader who cannot see it — not just "a spider". */
+    alt: z.string().min(10),
+    credit: z.string().min(1),
+    /** e.g. "CC BY-SA 4.0", "CC0", "Public domain" */
+    license: z.string().min(1),
+    /** The page the photo came from, so the licence can be checked. */
+    sourceUrl: z.url(),
+  });
+
+type ImageFn = () => z.ZodType;
+
 const species = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/species' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     commonName: z.string(),
     scientificName: z.string(),
     aliases: z.array(z.string()).default([]),
     family: z.string().default('Salticidae'),
     nativeRange: z.string(),
-    adultSize: z.object({
-      female: z.string(),
-      male: z.string(),
-    }),
-    lifespan: z.object({
-      female: z.string(),
-      male: z.string(),
-    }),
-    temperament: z.enum(['bold', 'shy', 'skittish', 'variable']),
-    difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
-    temperatureC: z.object({
-      min: z.number().int().min(0).max(45),
-      max: z.number().int().min(0).max(45),
-    }),
-    humidityPct: z.object({
-      min: z.number().int().min(0).max(100),
-      max: z.number().int().min(0).max(100),
-    }),
+
+    /**
+     * Set to 'undocumented' only when no published husbandry data exists for
+     * this species — which is true of most of the ~7,000 salticids.
+     *
+     * This is deliberately an explicit declaration rather than simply leaving
+     * the fields blank. Optional fields would let a contributor omit them by
+     * accident, and a reader could not tell "unknown" from "nobody bothered".
+     * Saying it out loud makes the absence a stated fact, and the page renders
+     * it as one.
+     *
+     * The refinement below then requires the profile to earn its place — see
+     * the comment there.
+     */
+    careData: z.enum(['undocumented']).optional(),
+
+    adultSize: z
+      .object({
+        female: z.string(),
+        male: z.string(),
+      })
+      .optional(),
+    lifespan: z
+      .object({
+        female: z.string(),
+        male: z.string(),
+      })
+      .optional(),
+    temperament: z.enum(['bold', 'shy', 'skittish', 'variable']).optional(),
+    difficulty: z.enum(['beginner', 'intermediate', 'advanced']).optional(),
+    temperatureC: z
+      .object({
+        min: z.number().int().min(0).max(45),
+        max: z.number().int().min(0).max(45),
+      })
+      .optional(),
+    humidityPct: z
+      .object({
+        min: z.number().int().min(0).max(100),
+        max: z.number().int().min(0).max(100),
+      })
+      .optional(),
     /** Rough guide only — real intervals vary a lot by temperature and feeding. */
     typicalMoltIntervalDays: z.number().int().positive().optional(),
-    heroImage: z.string().optional(),
-    imageCredit: z.string().optional(),
+    /**
+     * Photos of each sex. Optional because a profile is still useful without
+     * them, but jumping spiders are often dramatically dimorphic — a keeper
+     * trying to sex a spider benefits more from seeing both than from any
+     * amount of prose.
+     */
+    images: z
+      .object({
+        female: photo(image).optional(),
+        male: photo(image).optional(),
+      })
+      .optional(),
     // Required: every species has at least a World Spider Catalog entry, so
     // there is never a good reason for a profile to cite nothing.
     sources: z.array(source).min(1, 'Add at least one source — see CONTRIBUTING.md'),
     tips: z.array(tip).default([]),
     contributors: z.array(z.string()).default([]),
     updated: z.coerce.date(),
+  })
+  .superRefine((data, ctx) => {
+    const HUSBANDRY = [
+      'adultSize',
+      'lifespan',
+      'temperament',
+      'difficulty',
+      'temperatureC',
+      'humidityPct',
+    ] as const;
+
+    // Normal profiles: husbandry data is required, exactly as before.
+    if (data.careData !== 'undocumented') {
+      for (const field of HUSBANDRY) {
+        if (data[field] === undefined) {
+          ctx.addIssue({
+            code: 'custom',
+            path: [field],
+            message:
+              'Required. If no published care data exists for this species, set ' +
+              'careData: undocumented instead — see CONTRIBUTING.md.',
+          });
+        }
+      }
+      return;
+    }
+
+    /**
+     * Undocumented profiles have to earn their place, or this section drifts
+     * from a keeper's care reference into a list of every salticid on Earth.
+     *
+     * There are exactly two ways a species with no published husbandry data is
+     * still worth a page:
+     *
+     *   1. Someone keeps it — proven by a firsthand tip plus a photo. You
+     *      cannot photograph a spider you do not have.
+     *   2. It has been studied — proven by a peer-reviewed source, which is why
+     *      Evarcha arcuata and Saitis barbipes belong here.
+     *
+     * A World Spider Catalog entry alone satisfies neither, which is precisely
+     * what stops anyone generating stub profiles straight from a database.
+     */
+    const hasFirsthand =
+      data.tips.length > 0 &&
+      (data.images?.female !== undefined || data.images?.male !== undefined);
+    const hasResearch = data.sources.some((s) => s.kind === 'paper');
+
+    if (!hasFirsthand && !hasResearch) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['careData'],
+        message:
+          'A profile without published care data needs either (a) firsthand experience — at ' +
+          'least one entry in `tips` AND at least one photo, proving you keep this spider — or ' +
+          '(b) a peer-reviewed source (kind: paper) showing it has been studied. ' +
+          'A taxonomic database entry alone is not enough. See CONTRIBUTING.md.',
+      });
+    }
   }),
 });
 

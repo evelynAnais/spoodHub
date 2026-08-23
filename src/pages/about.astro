@@ -141,7 +141,7 @@ import Base, { REPO_URL } from '../layouts/Base.astro';
         <div class="text-sm font-semibold text-accent">1</div>
         <h3 class="mt-1 font-medium">Find the file</h3>
         <p class="mt-1 text-sm text-muted">
-          Species live in <code class="text-xs">src/content/species/</code>, guides in
+          Species live in <code class="text-xs">src/content/species/</code>, guides in{' '}
           <code class="text-xs">src/content/care/</code>.
         </p>
       </div>
@@ -202,8 +202,61 @@ updated: 2026-08-21
 
 Everything below the dashes is normal Markdown, and becomes the body of the page.</code></pre>
 
-    <p class="mt-4 text-muted">
-      The full field list and rules live in
+    <h3 class="mt-8 text-lg font-semibold">Species with no published care data</h3>
+    <p class="mt-2 text-muted">
+      Most of the roughly 7,000 jumping spider species have never been kept or written up. A
+      profile can declare that with <code class="text-xs">careData: undocumented</code>, which
+      drops the husbandry fields and shows a visible "Husbandry not documented" notice instead. A
+      reader can then tell <em>nobody knows</em> from <em>nobody bothered</em>.
+    </p>
+    <p class="mt-3 text-muted">
+      Such a profile still has to earn its place. The build accepts it only if you can show one of
+      two things: <strong class="text-fg">firsthand experience</strong> — at least one tip and a
+      photo, which you cannot produce for a spider you do not have — or{' '}
+      <strong class="text-fg">published research</strong>, meaning a peer-reviewed source, which is
+      why the two species studied in the sleep and behavior guides are here.
+    </p>
+    <p class="mt-3 text-muted">
+      A taxonomic database entry on its own is deliberately not enough. Otherwise anyone could
+      generate hundreds of stubs from a species list, and this would stop being a keeper's care
+      reference and turn into a catalogue.
+    </p>
+
+    <h3 class="mt-8 text-lg font-semibold">Photos</h3>
+    <p class="mt-2 text-muted">
+      A species profile can carry one photo of each sex, and those are among the most useful
+      contributions there are — jumping spiders are often dramatically different between males and
+      females, and a keeper trying to sex a spider learns more from two pictures than from any
+      description.
+    </p>
+    <p class="mt-3 text-muted">
+      Every photo needs a <strong class="text-fg">credit, a licence, and a link to where it came
+      from</strong>. These are not optional: most usable spider photography is Creative Commons and
+      obliges attribution, so the build rejects an image that lacks them rather than leaving it for
+      a reviewer to notice. Only add photos you have the right to use — your own, or something
+      under a licence that permits it.
+    </p>
+
+    <h3 class="mt-8 text-lg font-semibold">Species link themselves</h3>
+    <p class="mt-2 text-muted">
+      When a care guide mentions a jumping spider that has a profile on this site, the first
+      mention becomes a link to it automatically. You do not write the link yourself —{' '}
+      <em>Phidippus regius</em>, <em>P. regius</em> and "Regal Jumping Spider" all work.
+    </p>
+    <p class="mt-3 text-muted">
+      Only species that already have a profile are linked, so a mention of something not yet
+      written up stays as plain text rather than turning into a broken link. If a guide you are
+      writing references a jumping spider we do not cover yet, adding even a short profile for it
+      is what keeps the guides connected to one another.
+    </p>
+    <p class="mt-3 text-muted">
+      Spiders that are not jumping spiders are never linked this way. The guides also mention{' '}
+      <em>Parasteatoda tepidariorum</em>, a cobweb spider cited for pedipalp development, and{' '}
+      <em>Drosophila</em> fruit flies as prey — neither belongs in the species section.
+    </p>
+
+    <p class="mt-8 text-muted">
+      The full field list and rules live in{' '}
       <code class="text-xs">CONTRIBUTING.md</code> in the repository.
     </p>
 

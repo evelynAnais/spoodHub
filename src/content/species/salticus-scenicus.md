@@ -19,6 +19,23 @@ humidityPct:
   min: 40
   max: 60
 typicalMoltIntervalDays: 25
+images:
+  female:
+    src: ../../assets/species/salticus-scenicus-female.jpg
+    alt: >-
+      A female zebra jumping spider, small and black with white transverse stripes across the
+      abdomen, standing on a pale surface
+    credit: Kaldari
+    license: CC0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Kaldari_Salticus_scenicus_female_01.jpg
+  male:
+    src: ../../assets/species/salticus-scenicus-male.jpg
+    alt: >-
+      A male zebra jumping spider showing the black and white striped abdomen and the enlarged
+      forward-projecting chelicerae characteristic of males
+    credit: Kaldari
+    license: CC0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Kaldari_Salticus_scenicus_male_01.jpg
 sources:
   - label: araneae — Spiders of Europe, Salticus scenicus (Clerck, 1757)
     url: https://araneae.nmbe.ch/taxondata/Salticus_scenicus

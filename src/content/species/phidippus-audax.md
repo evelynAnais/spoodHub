@@ -19,6 +19,23 @@ humidityPct:
   min: 50
   max: 65
 typicalMoltIntervalDays: 30
+images:
+  female:
+    src: ../../assets/species/phidippus-audax-female.jpg
+    alt: >-
+      An adult female bold jumping spider, black and hairy with pale markings on the abdomen and
+      banded legs, photographed close up
+    credit: platycryptus
+    license: CC BY 2.0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Adult_female_Phidippus_audax_1_MAY_2011.jpg
+  male:
+    src: ../../assets/species/phidippus-audax-male.jpg
+    alt: >-
+      An adult male bold jumping spider facing forward, black with white abdominal spots and
+      iridescent green chelicerae
+    credit: Thomas Shahan
+    license: CC BY 2.0
+    sourceUrl: https://commons.wikimedia.org/wiki/File:Adult_Male_Phidippus_audax_Jumping_Spider.jpg
 sources:
   - label: World Spider Catalog — Phidippus audax (Hentz, 1845)
     url: https://wsc.nmbe.ch/species/31810/Phidippus_audax

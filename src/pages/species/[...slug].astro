@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import SourcesAndTips from '../../components/SourcesAndTips.astro';
+import SpeciesPhotos from '../../components/SpeciesPhotos.astro';
 import Base from '../../layouts/Base.astro';
 
 export async function getStaticPaths() {
@@ -20,6 +21,16 @@ const d = entry.data;
  * schema.org has no vocabulary for a husbandry care sheet, and Article is what
  * search engines actually understand.
  */
+/**
+ * The husbandry figures only exist on documented profiles, so the description
+ * has to branch — otherwise a species with `careData: undocumented` crashes
+ * the render reading temperatureC.min.
+ */
+const metaDescription =
+  d.careData === 'undocumented'
+    ? `${d.commonName} (${d.scientificName}): identification, range and what is known — plus an honest note that captive husbandry for this species has never been documented.`
+    : `How to keep ${d.commonName} (${d.scientificName}): enclosure, temperature ${d.temperatureC!.min}–${d.temperatureC!.max} °C, humidity ${d.humidityPct!.min}–${d.humidityPct!.max}%, feeding and temperament.`;
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -38,7 +49,7 @@ const schema = {
 
 <Base
   title={`${d.commonName} (${d.scientificName}) care guide — spoodHub`}
-  description={`How to keep ${d.commonName} (${d.scientificName}): enclosure, temperature ${d.temperatureC.min}–${d.temperatureC.max} °C, humidity ${d.humidityPct.min}–${d.humidityPct.max}%, feeding and temperament.`}
+  description={metaDescription}
   schema={schema}
 >
   <a href="/species" class="text-sm text-accent hover:underline">← All species</a>
@@ -53,28 +64,69 @@ const schema = {
     }
   </header>
 
-  <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-    {
-      [
-        { label: 'Female size', value: d.adultSize.female },
-        { label: 'Male size', value: d.adultSize.male },
-        { label: 'Temperature', value: `${d.temperatureC.min}–${d.temperatureC.max} °C` },
-        { label: 'Humidity', value: `${d.humidityPct.min}–${d.humidityPct.max}%` },
-        { label: 'Female lifespan', value: d.lifespan.female },
-        { label: 'Male lifespan', value: d.lifespan.male },
-        { label: 'Temperament', value: d.temperament },
-        { label: 'Difficulty', value: d.difficulty },
-      ].map((stat) => (
+  <SpeciesPhotos images={d.images} commonName={d.commonName} />
+
+  {
+    d.careData === 'undocumented' ? (
+      <div class="mt-6 rounded-xl border border-watch/30 bg-watch/10 p-5">
+        <h2 class="font-semibold">Husbandry not documented</h2>
+        <p class="mt-2 text-sm">
+          No published care data exists for this species — no measured temperature or humidity
+          range, no recorded lifespan in captivity. That is true of most of the roughly 7,000
+          jumping spider species; only a handful are kept widely enough to have been written up.
+        </p>
+        <p class="mt-2 text-sm">
+          Rather than fill this page with plausible-looking numbers, it says so. What is below is
+          what can actually be sourced, plus firsthand experience where a keeper has offered it.
+        </p>
+        <p class="mt-3 text-sm text-muted">
+          Keep this species?{' '}
+          <a href="/about#contributing" class="text-accent hover:underline">
+            Your numbers would be the first
+          </a>
+          .
+        </p>
+      </div>
+    ) : (
+      <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { label: 'Female size', value: d.adultSize!.female },
+          { label: 'Male size', value: d.adultSize!.male },
+          { label: 'Temperature', value: `${d.temperatureC!.min}–${d.temperatureC!.max} °C` },
+          { label: 'Humidity', value: `${d.humidityPct!.min}–${d.humidityPct!.max}%` },
+          { label: 'Female lifespan', value: d.lifespan!.female },
+          { label: 'Male lifespan', value: d.lifespan!.male },
+          { label: 'Temperament', value: d.temperament },
+          { label: 'Difficulty', value: d.difficulty },
+        ].map((stat) => (
+          <div class="rounded-lg border border-line bg-raised px-3 py-2">
+            <dt class="text-xs text-muted">{stat.label}</dt>
+            <dd class="mt-0.5 font-medium capitalize">{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+
+  {
+    /* Size is often the one measured fact available even when nothing else is,
+       so show it separately rather than losing it inside the notice above. */
+    d.careData === 'undocumented' && d.adultSize && (
+      <dl class="mt-4 grid grid-cols-2 gap-3">
         <div class="rounded-lg border border-line bg-raised px-3 py-2">
-          <dt class="text-xs text-muted">{stat.label}</dt>
-          <dd class="mt-0.5 font-medium capitalize">{stat.value}</dd>
+          <dt class="text-xs text-muted">Female size</dt>
+          <dd class="mt-0.5 font-medium">{d.adultSize.female}</dd>
         </div>
-      ))
-    }
-  </dl>
+        <div class="rounded-lg border border-line bg-raised px-3 py-2">
+          <dt class="text-xs text-muted">Male size</dt>
+          <dd class="mt-0.5 font-medium">{d.adultSize.male}</dd>
+        </div>
+      </dl>
+    )
+  }
 
   <p class="mt-4 text-sm text-muted">
-    <strong class="text-fg">Native range:</strong>
+    <strong class="text-fg">Native range:</strong>{' '}
     {d.nativeRange}
     {
       d.typicalMoltIntervalDays && (
