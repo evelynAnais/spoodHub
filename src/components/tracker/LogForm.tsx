@@ -5,11 +5,13 @@ import {
   logEvent,
   PREMOLT_BEHAVIORS,
   REHOUSE_REASONS,
+  replaceEvent,
   type Behavior,
   type EventType,
   type HealthConcern,
   type RehouseReason,
   type Spider,
+  type TrackEvent,
 } from '../../lib/db';
 import { humanizeTag, toDateTimeInput } from '../../lib/format';
 import { Button, Field, inputClass } from './ui';
@@ -38,26 +40,42 @@ export function LogForm({
   spider,
   onDone,
   defaultType = 'feed',
+  existing,
 }: {
   spider: Spider;
   onDone?: () => void;
   defaultType?: EventType;
+  /** When present the form edits this entry instead of creating a new one. */
+  existing?: TrackEvent;
 }) {
-  const [type, setType] = useState<EventType>(defaultType);
-  const [at, setAt] = useState(() => toDateTimeInput());
-  const [notes, setNotes] = useState('');
-  const [prey, setPrey] = useState(COMMON_PREY[0]);
-  const [preySize, setPreySize] = useState<'small' | 'medium' | 'large'>('medium');
-  const [accepted, setAccepted] = useState(true);
-  const [newInstar, setNewInstar] = useState<string>(
-    spider.instar ? String(spider.instar + 1) : '',
+  const isEditing = existing !== undefined;
+
+  const [type, setType] = useState<EventType>(existing?.type ?? defaultType);
+  const [at, setAt] = useState(() =>
+    existing ? toDateTimeInput(new Date(existing.at)) : toDateTimeInput(),
   );
-  const [behaviors, setBehaviors] = useState<Behavior[]>([]);
-  const [concern, setConcern] = useState<HealthConcern>('injury');
-  const [resolved, setResolved] = useState(false);
-  const [enclosure, setEnclosure] = useState('');
-  const [rehouseReason, setRehouseReason] = useState<RehouseReason>('upgrade');
+  const [notes, setNotes] = useState(existing?.notes ?? '');
+  const [prey, setPrey] = useState(existing?.prey ?? COMMON_PREY[0]);
+  const [preySize, setPreySize] = useState<'small' | 'medium' | 'large'>(
+    existing?.preySize ?? 'medium',
+  );
+  const [accepted, setAccepted] = useState(existing?.accepted ?? true);
+  const [newInstar, setNewInstar] = useState<string>(
+    existing?.newInstar !== undefined
+      ? String(existing.newInstar)
+      : spider.instar
+        ? String(spider.instar + 1)
+        : '',
+  );
+  const [behaviors, setBehaviors] = useState<Behavior[]>(existing?.behaviors ?? []);
+  const [concern, setConcern] = useState<HealthConcern>(existing?.concern ?? 'injury');
+  const [resolved, setResolved] = useState(existing?.resolved ?? false);
+  const [enclosure, setEnclosure] = useState(existing?.enclosure ?? '');
+  const [rehouseReason, setRehouseReason] = useState<RehouseReason>(
+    existing?.rehouseReason ?? 'upgrade',
+  );
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function toggleBehavior(tag: Behavior) {
     setBehaviors((current) =>
@@ -68,23 +86,35 @@ export function LogForm({
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
+    setError(null);
+
+    // Only the fields belonging to the chosen type are included, so switching
+    // a feeding to a molt does not leave `prey` and `accepted` on the record.
+    const payload = {
+      spiderId: spider.id,
+      type,
+      at: new Date(at).toISOString(),
+      notes: notes.trim() || undefined,
+      ...(type === 'feed' ? { prey, preySize, accepted } : {}),
+      ...(type === 'molt' && newInstar ? { newInstar: Number(newInstar) } : {}),
+      ...(type === 'behavior' ? { behaviors } : {}),
+      ...(type === 'health' ? { concern, resolved } : {}),
+      ...(type === 'rehouse'
+        ? { enclosure: enclosure.trim() || undefined, rehouseReason }
+        : {}),
+    };
+
     try {
-      await logEvent({
-        spiderId: spider.id,
-        type,
-        at: new Date(at).toISOString(),
-        notes: notes.trim() || undefined,
-        ...(type === 'feed' ? { prey, preySize, accepted } : {}),
-        ...(type === 'molt' && newInstar ? { newInstar: Number(newInstar) } : {}),
-        ...(type === 'behavior' ? { behaviors } : {}),
-        ...(type === 'health' ? { concern, resolved } : {}),
-        ...(type === 'rehouse'
-          ? { enclosure: enclosure.trim() || undefined, rehouseReason }
-          : {}),
-      });
-      setNotes('');
-      setBehaviors([]);
+      if (existing) {
+        await replaceEvent(existing.id, payload);
+      } else {
+        await logEvent(payload);
+        setNotes('');
+        setBehaviors([]);
+      }
       onDone?.();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not save that entry.');
     } finally {
       setSaving(false);
     }
@@ -311,9 +341,15 @@ export function LogForm({
         />
       </Field>
 
+      {error ? (
+        <p className="rounded-lg border border-alert/30 bg-alert/10 px-3 py-2 text-sm text-alert">
+          {error}
+        </p>
+      ) : null}
+
       <div className="flex gap-2">
         <Button type="submit" variant="primary" disabled={saving}>
-          {saving ? 'Saving…' : 'Log it'}
+          {saving ? 'Saving…' : isEditing ? 'Save changes' : 'Log it'}
         </Button>
         {onDone ? (
           <Button variant="ghost" onClick={onDone}>

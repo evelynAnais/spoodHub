@@ -113,6 +113,38 @@ export async function updateEvent(id: string, patch: Partial<TrackEvent>): Promi
   await db.events.update(id, { ...patch, updatedAt: now() });
 }
 
+/**
+ * Replaces an event wholesale rather than patching it.
+ *
+ * A patch would leave stale type-specific fields behind — correcting a feeding
+ * that was really a molt would keep `prey` and `accepted` on the record, and
+ * the pre-molt rules read those. Writing the whole object means the stored
+ * event always matches exactly one event type.
+ */
+export async function replaceEvent(id: string, input: NewEvent): Promise<void> {
+  const stamp = now();
+
+  await db.transaction('rw', db.spiders, db.events, async () => {
+    const existing = await db.events.get(id);
+    if (!existing) throw new Error('That entry no longer exists.');
+
+    await db.events.put({
+      ...input,
+      id,
+      createdAt: existing.createdAt,
+      updatedAt: stamp,
+    });
+
+    // Same rule as logging: a molt is the one event that changes the spider.
+    if (input.type === 'molt' && typeof input.newInstar === 'number') {
+      await db.spiders.update(input.spiderId, {
+        instar: input.newInstar,
+        updatedAt: stamp,
+      });
+    }
+  });
+}
+
 export async function deleteEvent(id: string): Promise<void> {
   await db.events.delete(id);
 }

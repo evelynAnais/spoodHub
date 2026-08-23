@@ -146,7 +146,7 @@ export function SpiderDetail({
 
       <section>
         <h2 className="mb-3 font-semibold">History</h2>
-        <EventTimeline events={events ?? []} />
+        <EventTimeline events={events ?? []} spider={spider} />
       </section>
 
       {spider.notes ? (

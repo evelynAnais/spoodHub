@@ -24,15 +24,15 @@ commonName: Regal Jumping Spider
 scientificName: Phidippus regius
 aliases:
   - Regal jumper
-nativeRange: Southeastern United States (especially Florida) and the Greater Antilles
+nativeRange: Southeastern United States, the Bahamas and the Greater Antilles
 adultSize:
   female: 15–22 mm
   male: 12–18 mm
 lifespan:
   female: 18–24 months
   male: 12–18 months
-temperament: bold
-difficulty: beginner
+temperament: bold          # bold | shy | skittish | variable
+difficulty: beginner       # beginner | intermediate | advanced
 temperatureC:
   min: 21
   max: 27
@@ -40,11 +40,20 @@ humidityPct:
   min: 50
   max: 70
 typicalMoltIntervalDays: 35
+
+# At least one source is required. `kind` decides the badge readers see.
 sources:
   - label: World Spider Catalog — Phidippus regius (C. L. Koch, 1846)
     url: https://wsc.nmbe.ch/species/31858/Phidippus_regius
-    kind: database
-updated: 2026-08-18
+    kind: database         # paper | book | database | institution | care-sheet | community
+
+# Optional. Your own observations go here rather than in the body text.
+tips:
+  - text: Mine refuses blue bottles below about 21 °C but takes them at 24 °C.
+    by: your-name
+    context: Two females, over about a year
+
+updated: 2026-08-23
 ---
 
 Everything below the dashes is ordinary Markdown, and becomes the body of the page.
@@ -87,7 +96,9 @@ tags:
 sources:
   - label: Some published source
     url: https://example.org/
-updated: 2026-08-18
+    kind: paper
+tips: []
+updated: 2026-08-23
 ---
 ```
 
