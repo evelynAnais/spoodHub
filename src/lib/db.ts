@@ -116,10 +116,10 @@ export async function updateEvent(id: string, patch: Partial<TrackEvent>): Promi
 /**
  * Replaces an event wholesale rather than patching it.
  *
- * A patch would leave stale type-specific fields behind — correcting a feeding
- * that was really a molt would keep `prey` and `accepted` on the record, and
- * the pre-molt rules read those. Writing the whole object means the stored
- * event always matches exactly one event type.
+ * The UI does not let an entry change type, so this is mostly about fields the
+ * keeper *clears*: blanking a note or an instar has to actually remove the key,
+ * and a partial update would quietly leave the old value in place. Writing the
+ * whole object means what is stored is always exactly what the form showed.
  */
 export async function replaceEvent(id: string, input: NewEvent): Promise<void> {
   const stamp = now();

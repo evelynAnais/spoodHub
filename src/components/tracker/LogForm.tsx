@@ -122,22 +122,39 @@ export function LogForm({
 
   return (
     <form onSubmit={submit} className="space-y-4">
-      <div className="flex flex-wrap gap-1.5">
-        {EVENT_TABS.map((tab) => (
-          <button
-            key={tab.type}
-            type="button"
-            onClick={() => setType(tab.type)}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-              type === tab.type
-                ? 'bg-accent text-accent-fg'
-                : 'bg-raised text-muted hover:text-fg'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/*
+        Editing is scoped to the details of an entry, never its type. Changing
+        a feeding into a molt would silently rewrite what the pre-molt rules
+        see, and it is a rare enough mistake that deleting and re-logging is
+        the clearer fix. So the tabs become a fixed label when editing.
+      */}
+      {isEditing ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-lg bg-raised px-3 py-1.5 text-sm font-medium">
+            {EVENT_TABS.find((t) => t.type === type)?.label ?? type}
+          </span>
+          <span className="text-xs text-muted">
+            To change the entry type, delete this one and log a new entry.
+          </span>
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          {EVENT_TABS.map((tab) => (
+            <button
+              key={tab.type}
+              type="button"
+              onClick={() => setType(tab.type)}
+              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+                type === tab.type
+                  ? 'bg-accent text-accent-fg'
+                  : 'bg-raised text-muted hover:text-fg'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <Field label="When">
         <input
