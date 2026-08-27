@@ -60,6 +60,8 @@ export function LogForm({
     existing?.preySize ?? 'medium',
   );
   const [accepted, setAccepted] = useState(existing?.accepted ?? true);
+  // Entries logged before quantity existed have none; treat those as 1.
+  const [quantity, setQuantity] = useState(existing?.quantity ?? 1);
   const [newInstar, setNewInstar] = useState<string>(
     existing?.newInstar !== undefined
       ? String(existing.newInstar)
@@ -95,7 +97,7 @@ export function LogForm({
       type,
       at: new Date(at).toISOString(),
       notes: notes.trim() || undefined,
-      ...(type === 'feed' ? { prey, preySize, accepted } : {}),
+      ...(type === 'feed' ? { prey, preySize, quantity, accepted } : {}),
       ...(type === 'molt' && newInstar ? { newInstar: Number(newInstar) } : {}),
       ...(type === 'behavior' ? { behaviors } : {}),
       ...(type === 'health' ? { concern, resolved } : {}),
@@ -168,19 +170,70 @@ export function LogForm({
 
       {type === 'feed' ? (
         <div className="space-y-4">
+          {/*
+            A plain text input with quick-pick buttons, deliberately not a
+            <datalist>. Two problems with the datalist this replaces: it needs a
+            document-unique id, and two LogForms can be on screen at once (the
+            "log something" card plus an entry being edited), so both emitted
+            the same id and the browser bound every input to the first list.
+            Beyond that, datalist is native browser UI — unstyleable, and each
+            browser positions and paints it differently.
+          */}
+          <Field label="Prey">
+            <input
+              value={prey}
+              onChange={(e) => setPrey(e.target.value)}
+              className={inputClass}
+              placeholder="What did you offer?"
+            />
+          </Field>
+
+          <div className="flex flex-wrap gap-1.5">
+            {COMMON_PREY.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setPrey(item)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                  prey === item
+                    ? 'border-accent/40 bg-accent/10 text-accent'
+                    : 'border-line bg-raised text-muted hover:text-fg'
+                }`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
           <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Prey">
-              <input
-                list="prey-options"
-                value={prey}
-                onChange={(e) => setPrey(e.target.value)}
-                className={inputClass}
-              />
-              <datalist id="prey-options">
-                {COMMON_PREY.map((item) => (
-                  <option key={item} value={item} />
-                ))}
-              </datalist>
+            <Field label="How many">
+              <div className="flex items-stretch gap-2">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="w-11 shrink-0 rounded-lg border border-line bg-raised text-lg font-medium transition hover:border-accent/50"
+                  aria-label="One fewer"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={99}
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+                  className={`${inputClass} text-center`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setQuantity((q) => Math.min(99, q + 1))}
+                  className="w-11 shrink-0 rounded-lg border border-line bg-raised text-lg font-medium transition hover:border-accent/50"
+                  aria-label="One more"
+                >
+                  +
+                </button>
+              </div>
             </Field>
             <Field label="Size">
               <select

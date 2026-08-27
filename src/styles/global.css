@@ -94,6 +94,15 @@ body {
   text-decoration-color: var(--c-accent);
 }
 
+/* The ↗ / ↓PDF markers appended to external links in Markdown content. Kept
+   smaller and quieter than the link text so they read as an annotation rather
+   than part of the sentence. */
+.link-marker {
+  font-size: 0.85em;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
 /* Auto-generated links to species profiles. Given a slightly stronger
    treatment than glossary links — a species name is a destination worth
    noticing, whereas a glossary term is a definition you only follow when

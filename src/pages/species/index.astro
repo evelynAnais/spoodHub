@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import CareIcon from '../../components/CareIcon.astro';
 import Base from '../../layouts/Base.astro';
 
 const species = (await getCollection('species')).sort((a, b) =>
@@ -42,8 +44,48 @@ const DIFFICULTY_TONE = {
             href={`/species/${entry.id}`}
             class="block h-full rounded-xl border border-line bg-surface p-5 transition hover:border-accent/50"
           >
-            <div class="flex items-start justify-between gap-3">
-              <div>
+            <div class="flex items-start gap-3">
+              {
+                /*
+                  The profile's own photo, rather than generic art. Female by
+                  preference since she is usually the more familiar form, but
+                  falling back to the male — and the thumbnail always says which
+                  it is showing.
+
+                  That label is not decoration. Jumping spiders are dramatically
+                  dimorphic; an unlabelled male regal thumbnail would give a
+                  browsing reader entirely the wrong idea of the species, on a
+                  site whose sexing guide exists to tell them apart.
+                */
+                (() => {
+                  const female = entry.data.images?.female;
+                  const thumb = female ?? entry.data.images?.male;
+                  const sex = female ? 'Female' : 'Male';
+                  return thumb ? (
+                    <span class="relative shrink-0">
+                      <Image
+                        src={thumb.src}
+                        alt=""
+                        widths={[96, 192]}
+                        sizes="72px"
+                        class="size-16 rounded-xl object-cover"
+                      />
+                      <span
+                        class="absolute -right-1 -bottom-1 grid size-5 place-items-center rounded-full border border-line bg-surface text-[11px] leading-none text-muted"
+                        title={`${sex} pictured`}
+                      >
+                        <span aria-hidden="true">{female ? '♀' : '♂'}</span>
+                        <span class="sr-only">{sex} pictured</span>
+                      </span>
+                    </span>
+                  ) : (
+                    <span class="grid size-16 shrink-0 place-items-center rounded-xl border border-line bg-raised text-muted">
+                      <CareIcon slug="__species" class="size-7" />
+                    </span>
+                  );
+                })()
+              }
+              <div class="min-w-0 flex-1">
                 <h2 class="font-semibold">{entry.data.commonName}</h2>
                 <p class="text-sm italic text-muted">{entry.data.scientificName}</p>
               </div>

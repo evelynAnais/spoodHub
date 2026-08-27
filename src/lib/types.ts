@@ -83,6 +83,11 @@ export interface TrackEvent {
   // type: 'feed'
   prey?: string;
   preySize?: 'small' | 'medium' | 'large';
+  /**
+   * How many prey items this feeding involved. Optional because entries logged
+   * before this field existed have no value — treat a missing quantity as 1.
+   */
+  quantity?: number;
   accepted?: boolean;
 
   // type: 'molt'

@@ -126,6 +126,12 @@ export const GLOSSARY_GROUPS: GlossaryGroup[] = [
         text: 'The stage immediately before adulthood — after the second-to-last molt, before the final one. In males the pedipalp tips are visibly swollen but not yet hardened into a finished bulb.',
       },
       {
+        term: 'Senescence',
+        also: 'ageing',
+        aliases: ['senescent', 'senescing'],
+        text: 'Biological ageing — the gradual decline in function that comes with old age rather than with illness or injury. In a jumping spider it tends to show as poorer jumping, less interest in hunting, and colours that dull without a molt to restore them. It is not a disease and there is nothing to treat; it is the end of a fairly short life.',
+      },
+      {
         term: 'Gravid',
         text: 'Carrying eggs. Usually shows as a steadily enlarging abdomen that keeps growing rather than shrinking between meals.',
       },
