@@ -15,7 +15,7 @@ time so husbandry claims can be checked before they land — see the note at the
 | `behavior-and-body-language` | ✅ written | Two visual systems, defensive behaviors, approaching without frightening, stressors |
 | `/classification` (page, not a guide) | ✅ written | Spiders vs insects vs bugs, the taxonomic ladder, Araneomorphae vs Mygalomorphae, genus/species naming, subspecies and trade names |
 | `sexing` | ✅ written | Palpal bulb and epigyne, the pre-subadult/subadult/adult sequence, early *P. regius* color clues |
-| `age-and-instars` | ⬜ | Estimating age, counting instars, what is knowable for a wild-caught adult |
+| `age-and-instars` | ✅ written | Instars vs age, molt counts to maturity, why later instars vary more, senescence |
 | `feeder-insects` | ⬜ | Keeping cultures, hydration, the reptile-research trap (see below) |
 | `bioactive-enclosures` | ⬜ | Springtails, isopods, when bioactive is and is not worth it |
 | `maintenance` | ⬜ | Cleaning frequency, spot-cleaning vs. teardown, mould |
@@ -38,6 +38,7 @@ Fetched and confirmed to be what the label says.
 | Feeder nutrition | [Finke 2015 — complete nutrient content of four feeder insects](https://pubmed.ncbi.nlm.nih.gov/26366856/) | `paper` |
 | Feeder nutrition | [NAG — gut-loading diet evaluation for crickets, mealworms, superworms](https://nagonline.net/wp-content/uploads/2019/08/Brooks2-Brooks-Harris-2017-Gut-loading-diet-evaluation-for-crickets-mealworms-superworms.pdf) | `paper` |
 | Taxonomy | [WSC — Phidippus regius](https://wsc.nmbe.ch/species/31858/Phidippus_regius) · [P. audax](https://wsc.nmbe.ch/species/31810/Phidippus_audax) · [Salticus scenicus](https://araneae.nmbe.ch/taxondata/Salticus_scenicus) | `database` |
+| Life history / instars | [Jackson 1978, J. Arachnol. 6:1–29](https://www.americanarachnology.org/journal-joa/joa-all-articles/article/download/JoA_v6_p1.pdf) — molt counts to maturity, lab vs wild, later instars longer and more variable. Studied ***Phidippus johnsoni***, same genus as regals. Free PDF, but scanned — WebFetch cannot read it; extract the text locally. | `paper` |
 | Pedipalp maturation | [Quade et al. 2019, Sci. Rep. 9:6945](https://pmc.ncbi.nlm.nih.gov/articles/PMC6502807/) — bulb primordium, subadult "club", haemolymph inflation. ⚠️ *Parasteatoda tepidariorum*, **Theridiidae — a different family**, not a salticid. Sequence transfers; timings do not. | `paper` |
 | Vision / defense | [Spano, Long & Jakob 2012, Biology Letters 8(6)](https://pmc.ncbi.nlm.nih.gov/articles/PMC3497142/) — secondary eyes mediate looming response. Studied ***Phidippus audax***, directly relevant. | `paper` |
 | Defensive behavior | [Scriba et al. 2026, Frontiers in Zoology](https://pmc.ncbi.nlm.nih.gov/articles/PMC13067634/) — named defensive behaviors, distance-dependence, male courtship-over-caution. Studied *Saitis barbipes*. | `paper` |
@@ -49,6 +50,21 @@ Species totals used on `/classification` (139 families · 4,488 genera · 53,546
 the WSC statistics page itself does not render its numbers to an automated fetch. They are stated
 on the page as approximate and dated to early 2026, since roughly three new species are described
 per day.
+
+## Where to look first
+
+**[PECKHAMIA](https://peckhamia.com)** — an open-access journal devoted entirely to jumping
+spider biology, published since 1977, with its **complete archive free to download**. This is the
+single best starting point for any salticid question and should be checked before general web
+searching, which mostly returns unsourced care-sheet blogs.
+
+**[Journal of Arachnology](https://www.americanarachnology.org)** — many older papers are free
+PDFs, including Jackson's *P. johnsoni* life history above. Note the scans are image-based, so
+`WebFetch` returns binary; download and extract the text locally instead.
+
+**[Edwards, G.B. (1980) Taxonomy, ethology and ecology of Phidippus](https://peckhamia.com/library/Edwards_1980_Phidippus.pdf)**
+— found on the Peckhamia library, not yet read. Likely the most useful single document for the
+*Phidippus* species this site covers.
 
 ## Not yet verified
 

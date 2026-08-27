@@ -81,6 +81,9 @@ export default function QuickLog() {
       at: new Date().toISOString(),
       prey: defaultPrey,
       preySize: lastFeed?.preySize ?? 'medium',
+      // Quick-log stays one tap: assume a single item, matching the most
+      // common case. Use "More options" to log a different number.
+      quantity: 1,
       accepted,
     });
     setLastLoggedId(id);

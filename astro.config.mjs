@@ -7,6 +7,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 
+import rehypeExternalLinks from './src/lib/rehype-external-links.ts';
 import rehypeGlossary from './src/lib/rehype-glossary.ts';
 import rehypeSpecies from './src/lib/rehype-species.ts';
 import { loadSpeciesIndex } from './src/lib/species-index.ts';
@@ -83,6 +84,10 @@ export default defineConfig({
       [rehypeSanitize, sanitizeSchema],
       [rehypeSpecies, { species: speciesIndex }],
       rehypeGlossary,
+      // Last, so it also catches the internal-vs-external decision correctly
+      // for links the two plugins above just created (they are internal, so it
+      // leaves them alone).
+      rehypeExternalLinks,
     ],
 
     // Off because nothing uses it — no care guide contains a code block, and

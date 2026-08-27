@@ -46,6 +46,13 @@ interface Props {
 
 const { sources, tips } = Astro.props;
 const sorted = [...sources].sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind]);
+
+/**
+ * A link straight to a file downloads rather than opening a page. Worth saying
+ * so before the click — several of the older arachnology papers are scanned
+ * PDFs of a few megabytes, which is a surprise on mobile data.
+ */
+const isDocument = (url: string) => /\.(pdf|docx?|zip|csv|xlsx?)(\?|#|$)/i.test(url);
 ---
 
 {
@@ -94,8 +101,19 @@ const sorted = [...sources].sort((a, b) => KIND_RANK[a.kind] - KIND_RANK[b.kind]
             class="text-accent hover:underline"
           >
             {source.label}
-            <span aria-hidden="true"> ↗</span>
-            <span class="sr-only">(opens in a new tab)</span>
+            {
+              isDocument(source.url) ? (
+                <>
+                  <span aria-hidden="true"> ↓PDF</span>
+                  <span class="sr-only">(PDF file, opens in a new tab)</span>
+                </>
+              ) : (
+                <>
+                  <span aria-hidden="true"> ↗</span>
+                  <span class="sr-only">(opens in a new tab)</span>
+                </>
+              )
+            }
           </a>
         </li>
       ))

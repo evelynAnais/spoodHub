@@ -6,13 +6,17 @@ import { Badge, EmptyState } from './ui';
 
 function describe(event: TrackEvent): { title: string; tone: string } {
   switch (event.type) {
-    case 'feed':
+    case 'feed': {
+      // Entries predating the quantity field have none — show them unprefixed
+      // rather than claiming "1 ×", which would be an invented detail.
+      const count = event.quantity && event.quantity > 1 ? `${event.quantity} × ` : '';
       return {
-        title: `${event.accepted === false ? 'Refused' : 'Ate'} — ${event.prey ?? 'prey'}${
+        title: `${event.accepted === false ? 'Refused' : 'Ate'} — ${count}${event.prey ?? 'prey'}${
           event.preySize ? ` (${event.preySize})` : ''
         }`,
         tone: event.accepted === false ? 'watch' : 'ok',
       };
+    }
     case 'molt':
       return {
         title: `Molted${event.newInstar ? ` → instar ${event.newInstar}` : ''}`,
