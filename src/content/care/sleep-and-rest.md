@@ -2,6 +2,7 @@
 title: Sleep and rest
 summary: What jumping spiders do at night, the leg-curling that looks alarming but is not, and how to tell resting from dying.
 order: 7
+stage: understanding
 tags:
   - behavior
   - sleep

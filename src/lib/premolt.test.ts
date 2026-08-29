@@ -208,6 +208,50 @@ test('a rehouse with the spider still eating is a non-event', () => {
   assert.equal(result.refusalStreak, 0);
 });
 
+test('feeding interval follows the stage, not a flat number', () => {
+  // The feeding guide gives 1–2 days for spiderlings, 2–3 juveniles, 3–4 adults.
+  const at = (instar: number) => assessMolt(spider({ instar }), [], TODAY).feedIntervalDays;
+  assert.equal(at(2), 2, 'spiderling');
+  assert.equal(at(5), 3, 'juvenile');
+  assert.equal(at(8), 4, 'adult');
+  // Unknown instar gets the longest interval, so an unrecorded spider is
+  // under-nagged rather than over-nagged.
+  assert.equal(assessMolt(spider(), [], TODAY).feedIntervalDays, 4);
+});
+
+test('an adult three days unfed is not yet due; four days is', () => {
+  const events = [molt(10, 8), feed(3, true)];
+  assert.equal(assessMolt(spider({ instar: 8 }), events, TODAY).feedingDue, false);
+
+  const older = [molt(10, 8), feed(4, true)];
+  assert.equal(assessMolt(spider({ instar: 8 }), older, TODAY).feedingDue, true);
+});
+
+test('a spiderling is due sooner than an adult on the same history', () => {
+  const events = [feed(2, true), feed(5, true), feed(8, true)];
+  assert.equal(assessMolt(spider({ instar: 2 }), events, TODAY).feedingDue, true, 'spiderling');
+  assert.equal(assessMolt(spider({ instar: 8 }), events, TODAY).feedingDue, false, 'adult');
+});
+
+test('a spider that has never been fed is due', () => {
+  assert.equal(assessMolt(spider({ instar: 5 }), [], TODAY).feedingDue, true);
+});
+
+test('nothing in a molt state is ever reported as due a feeding', () => {
+  // This is the rule that stops the summary contradicting the spider's own page.
+  const premolt = [feed(9, false), feed(6, false), feed(3, false)];
+  assert.equal(assessMolt(spider({ instar: 5 }), premolt, TODAY).status, 'in-premolt');
+  assert.equal(assessMolt(spider({ instar: 5 }), premolt, TODAY).feedingDue, false);
+
+  const justMolted = [molt(1, 6), feed(30, true)];
+  assert.equal(assessMolt(spider({ instar: 6 }), justMolted, TODAY).status, 'post-molt');
+  assert.equal(assessMolt(spider({ instar: 6 }), justMolted, TODAY).feedingDue, false);
+
+  const likely = [molt(40, 5), feed(9, true), feed(6, true), feed(3, false)];
+  assert.equal(assessMolt(spider({ instar: 5 }), likely, TODAY).status, 'likely-premolt');
+  assert.equal(assessMolt(spider({ instar: 5 }), likely, TODAY).feedingDue, false);
+});
+
 test('every verdict explains itself', () => {
   const events = [feed(9, false), feed(6, false), feed(3, false)];
   const result = assessMolt(spider({ instar: 5 }), events, TODAY);

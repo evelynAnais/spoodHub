@@ -1,0 +1,62 @@
+---
+import { Image } from 'astro:assets';
+import { speciesShots } from '../../lib/species-shots';
+
+/**
+ * A continuously drifting strip of photos, running the full width.
+ *
+ * The list renders twice so the loop is seamless: the track translates by
+ * exactly -50%, which lands on a frame identical to where it started.
+ */
+const shots = await speciesShots();
+const doubled = [...shots, ...shots];
+
+/**
+ * One credit per photographer, as a single scrolling line rather than a wrapped
+ * paragraph.
+ *
+ * Note every credit stays in the DOM — the ticker moves them, it does not
+ * remove them. That matters: CC BY and CC BY-SA oblige attribution, and an
+ * assistive technology or a view-source reads the whole list regardless of
+ * where the animation happens to be.
+ */
+const credits = [...new Set(shots.map((s) => `${s.photo.credit} (${s.photo.license})`))];
+const creditsDoubled = [...credits, ...credits];
+---
+
+{
+  shots.length > 0 && (
+    <div class="mt-8">
+      <div class="marquee">
+        <ul class="marquee-track flex w-max gap-3">
+          {doubled.map((shot, i) => (
+            <li>
+              <a
+                href={`/species/${shot.slug}`}
+                title={`${shot.commonName} — ${shot.sex}`}
+                class="block overflow-hidden rounded-xl border border-line transition hover:border-accent/50"
+              >
+                <Image
+                  src={shot.photo.src}
+                  alt={i < shots.length ? `${shot.sex} ${shot.commonName.toLowerCase()}` : ''}
+                  widths={[160, 320]}
+                  sizes="112px"
+                  class="size-20 object-cover sm:size-28"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="marquee mt-2 flex items-center gap-2 text-xs text-muted">
+        <span class="shrink-0">Photos:</span>
+        <div class="marquee-credits flex w-max gap-6 whitespace-nowrap">
+          {creditsDoubled.map((credit) => (
+            <span>{credit}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}

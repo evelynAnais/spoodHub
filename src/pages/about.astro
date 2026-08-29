@@ -1,4 +1,6 @@
 ---
+import DataFlowDiagram from '../components/DataFlowDiagram.astro';
+import PageBanner from '../components/PageBanner.astro';
 import Base, { REPO_URL } from '../layouts/Base.astro';
 ---
 
@@ -6,11 +8,10 @@ import Base, { REPO_URL } from '../layouts/Base.astro';
   title="About — spoodHub"
   description="How spoodHub stores your data, and how to contribute care information."
 >
-  <h1 class="text-3xl font-bold">About spoodHub</h1>
-  <p class="mt-3 max-w-2xl text-lg text-muted">
-    Two things in one place: an open care reference anyone can improve, and a private tracker for
-    your own spiders.
-  </p>
+  <PageBanner
+    title="About spoodHub"
+    subtitle="An open care reference anyone can improve, and a private tracker for your own spiders."
+  />
 
   <section id="how-the-tracker-works" class="mt-12 scroll-mt-8">
     <h2 class="text-2xl font-semibold">How the tracker works</h2>
@@ -27,6 +28,8 @@ import Base, { REPO_URL } from '../layouts/Base.astro';
         theirs. They are separate databases on separate devices that have never been in contact.
       </p>
     </div>
+
+    <DataFlowDiagram />
 
     <h3 class="mt-8 text-lg font-semibold">What that costs you</h3>
     <ul class="mt-3 space-y-3 text-muted">

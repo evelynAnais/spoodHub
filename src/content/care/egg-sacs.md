@@ -2,6 +2,7 @@
 title: Egg sacs and gravid females
 summary: Why an unmated female can still produce an egg sac, how to tell an egg sac from a molt retreat, and what to do about either.
 order: 6
+stage: events
 tags:
   - breeding
   - egg-sacs

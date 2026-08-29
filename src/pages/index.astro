@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import SpeciesShowcase from '../components/hero/SpeciesShowcase.astro';
 import Base from '../layouts/Base.astro';
 
 const species = (await getCollection('species')).sort((a, b) =>
@@ -9,15 +10,34 @@ const care = (await getCollection('care')).sort((a, b) => a.data.order - b.data.
 ---
 
 <Base title="spoodHub — jumping spider care & tracking">
-  <section class="py-8">
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-      Everything about your <span class="text-accent">jumping spiders</span>, in one place.
-    </h1>
-    <p class="mt-4 max-w-2xl text-lg text-muted">
-      An open care reference anyone can improve, plus a feeding and molt tracker that runs
-      entirely on your own device — no account, no server, works offline.
-    </p>
-    <div class="mt-6 flex flex-wrap gap-3">
+  {/*
+    Three separate grid children rather than a text column plus an image.
+    On mobile the source order is what shows: heading, photo, buttons — so the
+    photo sits under the text instead of pushing it off the first screen, and
+    the call to action stays directly reachable below it.
+
+    From `lg` up they are placed explicitly: text and buttons stack in column
+    one, the photo occupies column two across both rows.
+  */}
+  {/* No top padding: <main> already supplies py-8, and adding more here made
+      the landing heading sit twice as far from the header as every other
+      page's. A little extra breathing room is fine from lg up. */}
+  <section class="grid gap-x-8 gap-y-6 pb-2 lg:grid-cols-[1fr_22rem] lg:items-center lg:pt-4 lg:pb-8">
+    <div class="lg:col-start-1 lg:row-start-1 lg:self-end">
+      <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+        Everything about your <span class="text-accent">jumping spiders</span>, in one place.
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg text-muted">
+        An open care reference anyone can improve, plus a feeding and molt tracker that runs
+        entirely on your own device — no account, no server, works offline.
+      </p>
+    </div>
+
+    <div class="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
+      <SpeciesShowcase />
+    </div>
+
+    <div class="flex flex-wrap gap-3 lg:col-start-1 lg:row-start-2 lg:self-start">
       <a
         href="/track"
         class="rounded-lg bg-accent px-5 py-2.5 font-medium text-accent-fg transition hover:opacity-90"
@@ -33,7 +53,7 @@ const care = (await getCollection('care')).sort((a, b) => a.data.order - b.data.
     </div>
   </section>
 
-  <section class="mt-12">
+  <section class="mt-8 lg:mt-12">
     <div class="flex items-baseline justify-between">
       <h2 class="text-xl font-semibold">Species</h2>
       <a href="/species" class="text-sm text-accent hover:underline">All {species.length} →</a>
@@ -59,7 +79,7 @@ const care = (await getCollection('care')).sort((a, b) => a.data.order - b.data.
     </ul>
   </section>
 
-  <section class="mt-12">
+  <section class="mt-8 lg:mt-12">
     <div class="flex items-baseline justify-between">
       <h2 class="text-xl font-semibold">Care guides</h2>
       <a href="/care" class="text-sm text-accent hover:underline">All {care.length} →</a>

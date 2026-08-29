@@ -2,6 +2,7 @@
 title: Molting
 summary: How to recognize pre-molt, what to do (mostly nothing), and why an interrupted molt is the most avoidable death in the hobby.
 order: 3
+stage: events
 tags:
   - molting
   - pre-molt

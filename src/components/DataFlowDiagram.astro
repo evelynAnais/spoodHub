@@ -1,0 +1,93 @@
+---
+/**
+ * Where tracker data lives, drawn rather than described.
+ *
+ * The two breakpoints tell the story differently on purpose. Side by side there
+ * is room for two opposing arrows — one carrying the app across, one crossed
+ * out coming back. Stacked, a second arrow pointing back *up* past the first is
+ * genuinely confusing, so mobile gets a single downward flow and states the
+ * "nothing returns" point as a note underneath instead.
+ *
+ * Built from boxes rather than one SVG so it reflows properly and the labels
+ * stay real, selectable text.
+ */
+---
+
+<figure class="mt-6">
+  <div class="rounded-xl border border-line bg-surface p-4 sm:p-6">
+    <div class="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center sm:gap-2">
+      <!-- the server -->
+      <div class="rounded-xl border border-line bg-raised p-4 text-center">
+        <p class="text-sm font-semibold">spoodhub.com</p>
+        <p class="mt-1 text-xs text-muted">
+          Serves the site. Stores nothing about you, and has nothing to store.
+        </p>
+      </div>
+
+      <!-- connector: one arrow down on mobile, two across on desktop -->
+      <div class="flex flex-col items-center gap-1">
+        <!-- mobile: a single downward flow -->
+        <div class="flex flex-col items-center sm:hidden">
+          <span class="h-5 w-px bg-accent"></span>
+          <span class="-mt-1 text-accent" aria-hidden="true">▼</span>
+          <p class="mt-1 text-center text-[11px] leading-tight text-muted">
+            sends the app: HTML, CSS, JavaScript
+          </p>
+        </div>
+
+        <!-- desktop: across, then the blocked return -->
+        <div class="hidden sm:flex sm:flex-col sm:items-center sm:gap-1">
+          <div class="flex w-28 items-center">
+            <span class="h-px flex-1 bg-accent"></span>
+            <span class="-ml-1 text-accent" aria-hidden="true">▶</span>
+          </div>
+          <p class="text-center text-[11px] leading-tight text-muted">
+            HTML, CSS<br />and JavaScript
+          </p>
+
+          <div class="mt-3 flex w-28 items-center">
+            <span class="text-alert" aria-hidden="true">◀</span>
+            <span
+              class="-mr-1 h-px flex-1"
+              style="background-image:repeating-linear-gradient(90deg,var(--c-alert) 0 3px,transparent 3px 7px)"
+            ></span>
+          </div>
+          <p class="text-center text-[11px] leading-tight text-alert">nothing comes back</p>
+        </div>
+      </div>
+
+      <!-- the device -->
+      <div class="rounded-xl border-2 border-accent/40 bg-accent/5 p-4">
+        <p class="text-center text-sm font-semibold">Your phone or laptop</p>
+
+        <div class="mt-3 space-y-2">
+          <div class="rounded-lg border border-line bg-surface px-3 py-2 text-center">
+            <p class="text-xs font-medium">The tracker, running</p>
+          </div>
+          <div class="rounded-lg border border-line bg-surface px-3 py-2">
+            <p class="text-center text-xs font-medium">IndexedDB</p>
+            <ul class="mt-1.5 space-y-0.5 text-center text-[11px] text-muted">
+              <li>your spiders</li>
+              <li>every feeding and molt</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- On mobile this replaces the crossed-out return arrow. On desktop it
+         reinforces what that arrow already showed. -->
+    <p
+      class="mt-4 flex items-center justify-center gap-2 rounded-lg border border-alert/30 bg-alert/10 px-3 py-2 text-center text-xs text-alert"
+    >
+      <span aria-hidden="true" class="text-sm">✕</span>
+      Nothing you record is ever sent back
+    </p>
+  </div>
+
+  <figcaption class="mt-3 text-center text-xs text-muted">
+    The site hands your browser a program. Everything you then record stays in the browser's own
+    database — which is also why clearing your browser data deletes it, and why the export button
+    matters.
+  </figcaption>
+</figure>

@@ -7,6 +7,7 @@ import { assessMolt, STATUS_META } from '../../lib/premolt';
 import type { SpeciesOption } from '../../lib/species';
 import { EventTimeline } from './EventTimeline';
 import { LogForm } from './LogForm';
+import { SpiderBio } from './SpiderBio';
 import { SpiderForm } from './SpiderForm';
 import { TagPanel } from './TagPanel';
 import { Badge, Button, Card, Stat, TONE_CLASSES } from './ui';
@@ -58,7 +59,7 @@ export function SpiderDetail({
 
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{spider.name}</h1>
+          <h2 className="text-2xl font-bold">{spider.name}</h2>
           <p className="mt-1 text-sm text-muted">
             {species ? (
               <a href={`/species/${species.slug}`} className="text-accent hover:underline">
@@ -92,6 +93,22 @@ export function SpiderDetail({
         ) : null}
       </div>
 
+      {assessment.feedingDue ? (
+        <div className="rounded-xl border border-accent/40 bg-accent/10 p-4">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-accent">Due a feeding</span>
+          </div>
+          <p className="mt-2 text-sm">
+            {assessment.daysSinceLastFeed === null
+              ? `No feeding has been logged for ${spider.name} yet.`
+              : `Last fed ${assessment.daysSinceLastFeed} ${
+                  assessment.daysSinceLastFeed === 1 ? 'day' : 'days'
+                } ago.`}{' '}
+            At this stage prey is usually offered every {assessment.feedIntervalDays} days.
+          </p>
+        </div>
+      ) : null}
+
       {openConcerns.length > 0 ? (
         <div className="rounded-xl border border-alert/30 bg-alert/10 p-4">
           <h2 className="font-semibold text-alert">
@@ -116,6 +133,7 @@ export function SpiderDetail({
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Stat
           label="Since last feed"
+          tone={assessment.feedingDue ? 'accent' : undefined}
           value={assessment.daysSinceLastFeed === null ? '—' : `${assessment.daysSinceLastFeed}d`}
         />
         <Stat
@@ -139,6 +157,8 @@ export function SpiderDetail({
         </p>
       ) : null}
 
+      <SpiderBio spider={spider} events={events ?? []} species={species} />
+
       <Card>
         <h2 className="mb-4 font-semibold">Log something</h2>
         <LogForm spider={spider} />
@@ -148,13 +168,6 @@ export function SpiderDetail({
         <h2 className="mb-3 font-semibold">History</h2>
         <EventTimeline events={events ?? []} spider={spider} />
       </section>
-
-      {spider.notes ? (
-        <Card>
-          <h2 className="mb-2 font-semibold">Notes</h2>
-          <p className="text-sm whitespace-pre-wrap text-muted">{spider.notes}</p>
-        </Card>
-      ) : null}
 
       <TagPanel spider={spider} />
 
@@ -188,11 +201,6 @@ export function SpiderDetail({
           </Button>
         </div>
       </Card>
-
-      <p className="text-xs text-muted">
-        Added {spider.acquiredAt ? relativeDays(spider.acquiredAt) : relativeDays(spider.createdAt)}
-        {spider.source ? ` · ${spider.source}` : ''}
-      </p>
     </div>
   );
 }

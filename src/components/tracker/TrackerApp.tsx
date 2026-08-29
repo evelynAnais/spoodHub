@@ -6,6 +6,8 @@ import { BackupNag, BackupPanel } from './BackupPanel';
 import { SpiderDetail } from './SpiderDetail';
 import { ArchivedList, SpiderList } from './SpiderList';
 import { SpiderForm } from './SpiderForm';
+import { TrackerSummary } from './TrackerSummary';
+import { YourSpecies } from './YourSpecies';
 import { Button, Card } from './ui';
 
 type View = { name: 'list' } | { name: 'new' } | { name: 'detail'; id: string };
@@ -84,7 +86,7 @@ export default function TrackerApp({ speciesOptions }: { speciesOptions: Species
           ← All spiders
         </Button>
         <Card>
-          <h1 className="mb-4 text-lg font-semibold">Add a spider</h1>
+          <h2 className="mb-4 text-lg font-semibold">Add a spider</h2>
           <SpiderForm
             speciesOptions={speciesOptions}
             onDone={(id) => navigate({ name: 'detail', id })}
@@ -102,7 +104,7 @@ export default function TrackerApp({ speciesOptions }: { speciesOptions: Species
     <div className="space-y-5">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Your spiders</h1>
+          <h2 className="text-2xl font-bold">Your spiders</h2>
           <p className="text-sm text-muted">
             {active.length === 0
               ? 'Stored on this device only.'
@@ -119,8 +121,12 @@ export default function TrackerApp({ speciesOptions }: { speciesOptions: Species
         </div>
       </header>
 
+      <TrackerSummary spiders={active} eventsBySpider={eventsBySpider} />
+
       <BackupNag />
       {showBackup ? <BackupPanel /> : null}
+
+      <YourSpecies spiders={active} speciesOptions={speciesOptions} />
 
       <SpiderList
         spiders={active}

@@ -214,8 +214,7 @@ const care = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
-    /** Lower numbers sort first in the care index. */
-    order: z.number().default(99),
+    stage: z.enum(['start', 'routine', 'understanding', 'events']).optional(),
     tags: z.array(z.string()).default([]),
     // Required: a care guide makes husbandry claims, and unsourced husbandry
     // advice is how bad practice spreads. Experience goes in `tips` instead.
