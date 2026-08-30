@@ -214,10 +214,9 @@ const care = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
+    order: z.number().default(99),
     stage: z.enum(['start', 'routine', 'understanding', 'events']).optional(),
     tags: z.array(z.string()).default([]),
-    // Required: a care guide makes husbandry claims, and unsourced husbandry
-    // advice is how bad practice spreads. Experience goes in `tips` instead.
     sources: z.array(source).min(1, 'Add at least one source — see CONTRIBUTING.md'),
     tips: z.array(tip).default([]),
     contributors: z.array(z.string()).default([]),
