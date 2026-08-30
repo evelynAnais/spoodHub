@@ -36,6 +36,14 @@ export interface MoltAssessment {
   estimatedNextMolt: string | null;
   /** 0–1, how far through the expected interval this spider is. */
   progress: number | null;
+  /** Days this spider should go between meals, from its stage. */
+  feedIntervalDays: number;
+  /**
+   * True when prey should be offered now. Already accounts for the states in
+   * which feeding is wrong, so a caller cannot accidentally recommend feeding a
+   * spider that is sealed in for a molt.
+   */
+  feedingDue: boolean;
 }
 
 /**
@@ -57,6 +65,23 @@ const DEFAULT_INTERVAL_BY_INSTAR: Record<number, number> = {
 };
 
 const FALLBACK_INTERVAL_DAYS = 40;
+
+/**
+ * How long between meals, by stage — the same figures the feeding guide gives,
+ * rather than a single flat number.
+ *
+ * Instar stands in for stage because it is what the tracker actually records.
+ * An unknown instar gets the adult interval: the longest of the three, so an
+ * unrecorded spiderling is under-nagged rather than a settled adult over-nagged.
+ */
+const FEED_INTERVAL_DAYS = { spiderling: 2, juvenile: 3, adult: 4 } as const;
+
+function feedIntervalFor(instar?: number): number {
+  if (instar === undefined) return FEED_INTERVAL_DAYS.adult;
+  if (instar <= 3) return FEED_INTERVAL_DAYS.spiderling;
+  if (instar <= 6) return FEED_INTERVAL_DAYS.juvenile;
+  return FEED_INTERVAL_DAYS.adult;
+}
 const DAY_MS = 86_400_000;
 
 /**
@@ -74,7 +99,36 @@ function median(values: number[]): number {
   return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
 }
 
+/**
+ * Whether prey should be offered, decided after the molt status is known.
+ *
+ * Kept out of the branches above so there is exactly one place that answers it:
+ * duplicating the rule is how the summary tile and a spider's own page end up
+ * disagreeing about the same animal.
+ */
+function isFeedingDue(result: MoltAssessment): boolean {
+  if (
+    result.status === 'in-premolt' ||
+    result.status === 'likely-premolt' ||
+    result.status === 'post-molt'
+  ) {
+    return false;
+  }
+  return (
+    result.daysSinceLastFeed === null || result.daysSinceLastFeed >= result.feedIntervalDays
+  );
+}
+
 export function assessMolt(
+  spider: Spider,
+  events: TrackEvent[],
+  today: Date = new Date(),
+): MoltAssessment {
+  const result = assessMoltStatus(spider, events, today);
+  return { ...result, feedingDue: isFeedingDue(result) };
+}
+
+function assessMoltStatus(
   spider: Spider,
   events: TrackEvent[],
   today: Date = new Date(),
@@ -156,7 +210,11 @@ export function assessMolt(
     refusalStreakStartedAt !== null &&
     lastRehouse.at <= refusalStreakStartedAt;
 
+  const feedIntervalDays = feedIntervalFor(spider.instar);
+
   const base = {
+    feedIntervalDays,
+    feedingDue: false, // filled in by assessMolt once the status is known
     daysSinceLastMolt,
     daysSinceLastFeed,
     refusalStreak,
@@ -303,7 +361,7 @@ export function assessMolt(
     };
   }
 
-  if (daysSinceLastFeed !== null && daysSinceLastFeed >= 10) {
+  if (daysSinceLastFeed !== null && daysSinceLastFeed >= feedIntervalDays * 2) {
     reasons.push(`${daysSinceLastFeed} days since the last feeding was offered`);
   }
 
@@ -312,7 +370,7 @@ export function assessMolt(
     status: 'normal',
     headline: 'Feeding normally',
     advice:
-      daysSinceLastFeed !== null && daysSinceLastFeed >= 7
+      daysSinceLastFeed !== null && daysSinceLastFeed >= feedIntervalDays
         ? 'Due for a feeding.'
         : 'Nothing to act on. Keep logging feedings so the molt estimate stays sharp.',
     reasons,

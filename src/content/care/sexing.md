@@ -2,6 +2,7 @@
 title: Telling males from females
 summary: The two signs that are certain, why juveniles are genuinely hard, and what changes as a male matures.
 order: 4
+stage: understanding
 tags:
   - sexing
   - anatomy

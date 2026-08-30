@@ -1,45 +1,106 @@
 ---
 import { getCollection } from 'astro:content';
 import CareIcon from '../../components/CareIcon.astro';
+import PageBanner from '../../components/PageBanner.astro';
 import Base from '../../layouts/Base.astro';
 
 const care = (await getCollection('care')).sort((a, b) => a.data.order - b.data.order);
+
+/**
+ * Grouped rather than listed flat.
+ *
+ * A new keeper opening this page has no way to tell that enclosure setup comes
+ * before egg sacs — alphabetically and visually they were peers. Grouping turns
+ * the index into a rough order of need, and the numbered first group says
+ * plainly where to begin.
+ */
+const STAGES = [
+  {
+    key: 'start',
+    title: 'Start here',
+    blurb: 'Before the spider arrives, or in its first days with you.',
+    numbered: true,
+  },
+  {
+    key: 'routine',
+    title: 'Day to day',
+    blurb: 'The ordinary rhythm of keeping one.',
+    numbered: false,
+  },
+  {
+    key: 'events',
+    title: 'Things that happen',
+    blurb: 'Events that arrive whether you planned for them or not.',
+    numbered: false,
+  },
+  {
+    key: 'understanding',
+    title: 'Understanding your spider',
+    blurb: 'Reading behaviour, telling sexes apart, and what the numbers mean.',
+    numbered: false,
+  },
+] as const;
+
+const grouped = STAGES.map((stage) => ({
+  ...stage,
+  guides: care.filter((entry) => entry.data.stage === stage.key),
+})).filter((group) => group.guides.length > 0);
+
+// A guide with no stage still gets a home rather than vanishing from the index.
+const unassigned = care.filter((entry) => !entry.data.stage);
 ---
 
 <Base title="Care guides — spoodHub" description="Practical husbandry guides for jumping spiders.">
-  <h1 class="text-3xl font-bold">Care guides</h1>
-  <p class="mt-2 max-w-2xl text-muted">
-    The practical side: enclosures, feeding, molting, and what to do when something looks wrong.
-  </p>
+  <PageBanner
+    title="Care guides"
+    subtitle="Enclosures, feeding, molting, and what to do when something looks wrong — roughly in the order you will need them."
+  />
 
-  <ul class="mt-8 space-y-3">
-    {
-      care.map((entry) => (
-        <li>
-          <a
-            href={`/care/${entry.id}`}
-            class="group flex items-start gap-4 rounded-xl border border-line bg-surface p-5 transition hover:border-accent/50"
-          >
-            <span class="grid size-12 shrink-0 place-items-center rounded-xl border border-line bg-raised text-muted transition group-hover:border-accent/40 group-hover:text-accent">
-              <CareIcon slug={entry.id} class="size-6" />
-            </span>
+  {
+    [...grouped, ...(unassigned.length
+      ? [{ key: 'more', title: 'More guides', blurb: '', numbered: false, guides: unassigned }]
+      : [])].map((group) => (
+      <section class="mt-10">
+        <h2 class="text-xs font-semibold tracking-widest text-accent uppercase">{group.title}</h2>
+        {group.blurb && <p class="mt-1 text-sm text-muted">{group.blurb}</p>}
 
-            <span class="min-w-0 flex-1">
-              <h2 class="font-semibold">{entry.data.title}</h2>
-              <p class="mt-1 text-sm text-muted">{entry.data.summary}</p>
-              {entry.data.tags.length > 0 && (
-                <span class="mt-3 flex flex-wrap gap-1.5">
-                  {entry.data.tags.map((tag) => (
-                    <span class="rounded-full border border-line bg-raised px-2 py-0.5 text-xs text-muted">
-                      {tag}
+        <ul class="mt-4 space-y-3">
+          {group.guides.map((entry, i) => (
+            <li>
+              <a
+                href={`/care/${entry.id}`}
+                class="group flex flex-row-reverse items-start gap-4 rounded-xl border border-line bg-surface p-5 transition hover:border-accent/50"
+              >
+                <span class="relative grid size-12 shrink-0 place-items-center rounded-xl border border-line bg-raised text-muted transition group-hover:border-accent/40 group-hover:text-accent">
+                  <CareIcon slug={entry.id} class="size-6" />
+                  {/* Only number a group that is actually a sequence. A single
+                      "1" implies an order that does not exist yet — this will
+                      start showing once "Start here" has more than one guide. */}
+                  {group.numbered && group.guides.length > 1 && (
+                    <span class="absolute -top-2 -right-2 grid size-5 place-items-center rounded-full bg-accent text-[11px] font-semibold text-accent-fg">
+                      {i + 1}
                     </span>
-                  ))}
+                  )}
                 </span>
-              )}
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+
+                <span class="min-w-0 flex-1">
+                  <h3 class="font-semibold">{entry.data.title}</h3>
+                  <p class="mt-1 text-sm text-muted">{entry.data.summary}</p>
+                  {entry.data.tags.length > 0 && (
+                    <span class="mt-3 flex flex-wrap gap-1.5">
+                      {entry.data.tags.map((tag) => (
+                        <span class="rounded-full border border-line bg-raised px-2 py-0.5 text-xs text-muted">
+                          {tag}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
 </Base>

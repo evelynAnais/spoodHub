@@ -8,4 +8,5 @@ export interface SpeciesOption {
   commonName: string;
   scientificName: string;
   typicalMoltIntervalDays?: number;
+  thumb?: string;
 }

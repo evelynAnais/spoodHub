@@ -2,6 +2,7 @@
 title: Age and instars
 summary: Why counting molts beats counting weeks, how many instars a jumping spider goes through, and why you usually cannot know the age of a spider you did not raise.
 order: 8
+stage: understanding
 tags:
   - development
   - instars

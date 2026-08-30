@@ -1,21 +1,39 @@
 ---
+import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import TrackerApp from '../../components/tracker/TrackerApp';
+import PageBanner from '../../components/PageBanner.astro';
 import Base from '../../layouts/Base.astro';
 import type { SpeciesOption } from '../../lib/species';
 
 /**
  * The species list is resolved at build time and handed to the island as a
  * prop, so the client bundle never has to know about content collections.
+ *
+ * Thumbnails are resolved here too. The island is `client:only`, so it cannot
+ * use Astro's <Image> component — `getImage()` gives it a plain optimised URL
+ * to drop into an <img> instead.
  */
-const speciesOptions: SpeciesOption[] = (await getCollection('species'))
-  .map((entry) => ({
-    slug: entry.id,
-    commonName: entry.data.commonName,
-    scientificName: entry.data.scientificName,
-    typicalMoltIntervalDays: entry.data.typicalMoltIntervalDays,
-  }))
-  .sort((a, b) => a.commonName.localeCompare(b.commonName));
+const entries = (await getCollection('species')).sort((a, b) =>
+  a.data.commonName.localeCompare(b.data.commonName),
+);
+
+const speciesOptions: SpeciesOption[] = await Promise.all(
+  entries.map(async (entry) => {
+    const photo = entry.data.images?.female ?? entry.data.images?.male;
+    const thumb = photo
+      ? (await getImage({ src: photo.src, width: 96, height: 96, format: 'webp' })).src
+      : undefined;
+
+    return {
+      slug: entry.id,
+      commonName: entry.data.commonName,
+      scientificName: entry.data.scientificName,
+      typicalMoltIntervalDays: entry.data.typicalMoltIntervalDays,
+      thumb,
+    };
+  }),
+);
 ---
 
 <Base
@@ -23,6 +41,12 @@ const speciesOptions: SpeciesOption[] = (await getCollection('species'))
   noindex
   description="Track feedings, molts and behavior for your jumping spiders. Stored on your device."
 >
+  <PageBanner
+    compact
+    title="Tracker"
+    subtitle="Stored on this device, never uploaded."
+  />
+
   {/*
     client:only because every byte this component renders comes from IndexedDB,
     which does not exist during the build. There is nothing to pre-render.

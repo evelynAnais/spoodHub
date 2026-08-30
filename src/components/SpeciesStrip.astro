@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  /** How many photos to show. Kept small so the band stays a band. */
+  limit?: number;
+}
+
+const { limit = 5 } = Astro.props;
+
+/**
+ * A band of species photos on the landing page, shuffled and capped.
+ *
+ * Shuffled at build time rather than per visit. Doing it in the browser would
+ * mean shipping JavaScript to the one page that currently needs none, and the
+ * whole point of the static content pages is that they do not. The order
+ * changes on every deploy, which is varied enough for decoration.
+ *
+ * One consequence worth knowing: builds are no longer byte-identical for the
+ * same commit. That is fine here — nothing depends on reproducible output — but
+ * it is why this is deliberately the only randomness in the build.
+ *
+ * Every photo links to its species, so the band is navigation rather than
+ * ornament, and it degrades honestly: with two species it shows two.
+ */
+const species = await getCollection('species');
+
+type Shot = {
+  slug: string;
+  commonName: string;
+  sex: 'Female' | 'Male';
+  photo: NonNullable<NonNullable<(typeof species)[number]['data']['images']>['female']>;
+};
+
+const shots: Shot[] = species.flatMap((entry) =>
+  (['female', 'male'] as const).flatMap((sex) => {
+    const photo = entry.data.images?.[sex];
+    return photo
+      ? [
+          {
+            slug: entry.id,
+            commonName: entry.data.commonName,
+            sex: sex === 'female' ? ('Female' as const) : ('Male' as const),
+            photo,
+          },
+        ]
+      : [];
+  }),
+);
+
+// Fisher–Yates. Math.random is fine: this runs once at build, and the only
+// thing at stake is which spider a visitor sees first.
+for (let i = shots.length - 1; i > 0; i -= 1) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [shots[i], shots[j]] = [shots[j], shots[i]];
+}
+
+const picked = shots.slice(0, limit);
+
+// CC BY and CC BY-SA oblige attribution wherever the photo appears, not only on
+// the profile page — so the credits travel with the band.
+const credits = [...new Set(picked.map((s) => `${s.photo.credit} (${s.photo.license})`))];
+---
+
+{
+  picked.length > 0 && (
+    <section class="mt-10">
+      <ul class="grid grid-cols-3 gap-2 sm:grid-cols-5 sm:gap-3">
+        {picked.map((shot, i) => (
+          <li class:list={[i >= 3 ? 'hidden sm:block' : '']}>
+            <a
+              href={`/species/${shot.slug}`}
+              class="group block overflow-hidden rounded-xl border border-line"
+              title={`${shot.commonName} — ${shot.sex.toLowerCase()}`}
+            >
+              <Image
+                src={shot.photo.src}
+                alt={`${shot.sex} ${shot.commonName.toLowerCase()}`}
+                widths={[200, 400]}
+                sizes="(min-width: 640px) 20vw, 33vw"
+                class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105"
+              />
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="mt-2 text-xs text-muted">
+        Photos: {credits.join(' · ')}
+      </p>
+    </section>
+  )
+}

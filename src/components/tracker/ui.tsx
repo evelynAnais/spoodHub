@@ -77,10 +77,22 @@ export function Field({
 export const inputClass =
   'w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-fg outline-none focus:border-accent';
 
-export function Stat({ label, value }: { label: string; value: ReactNode }) {
+export function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: ReactNode;
+  tone?: 'accent';
+}) {
   return (
-    <div className="rounded-lg border border-line bg-raised px-3 py-2">
-      <div className="text-xs text-muted">{label}</div>
+    <div
+      className={`rounded-lg border px-3 py-2 ${
+        tone === 'accent' ? 'border-accent/40 bg-accent/10' : 'border-line bg-raised'
+      }`}
+    >
+      <div className={`text-xs ${tone === 'accent' ? 'text-accent' : 'text-muted'}`}>{label}</div>
       <div className="mt-0.5 text-lg font-semibold tabular-nums">{value}</div>
     </div>
   );

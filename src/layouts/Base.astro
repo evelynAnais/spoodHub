@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import DraglineSpider from '../components/DraglineSpider.astro';
 
 interface Props {
   title: string;
@@ -38,6 +39,7 @@ const nav = [
 ];
 
 const path = Astro.url.pathname;
+const isHome = path === '/';
 ---
 
 <!doctype html>
@@ -81,9 +83,14 @@ const path = Astro.url.pathname;
       !bare && (
         <header class="border-b border-line">
           <nav class="mx-auto flex max-w-5xl items-center gap-1 px-4 py-3">
-            <a href="/" class="mr-auto text-lg font-bold tracking-tight">
-              spood<span class="text-accent">Hub</span>
-            </a>
+            {/* `relative` so the spider can hang from the wordmark. It is
+                landing-page only — see DraglineSpider for why. */}
+            <span class="relative mr-auto">
+              <a href="/" class="text-lg font-bold tracking-tight">
+                spood<span class="text-accent">Hub</span>
+              </a>
+              {isHome && <DraglineSpider />}
+            </span>
             {nav.map((item) => (
               <a
                 href={item.href}

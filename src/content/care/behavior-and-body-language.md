@@ -2,6 +2,7 @@
 title: Behavior and body language
 summary: How to tell an alarmed jumping spider from a relaxed one, why your hand looks like a predator, and how to approach one without frightening it.
 order: 5
+stage: understanding
 tags:
   - behavior
   - stress

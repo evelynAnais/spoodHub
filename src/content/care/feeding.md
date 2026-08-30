@@ -2,6 +2,7 @@
 title: Feeding
 summary: What to offer, how often, how big — and why logging refusals matters as much as logging meals.
 order: 2
+stage: routine
 tags:
   - feeding
   - prey

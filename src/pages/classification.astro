@@ -3,6 +3,7 @@ import AnatomyDiagram from '../components/AnatomyDiagram.astro';
 import Glossary from '../components/Glossary.astro';
 import SourcesAndTips from '../components/SourcesAndTips.astro';
 import TaxonomyLadder from '../components/TaxonomyLadder.astro';
+import SpeciesStrip from '../components/SpeciesStrip.astro';
 import Base from '../layouts/Base.astro';
 
 const sources = [
@@ -42,6 +43,8 @@ const sources = [
       the species pages here relate to each other.
     </p>
   </header>
+
+  <SpeciesStrip limit={5} />
 
   <section class="mt-12">
     <h2 class="text-2xl font-semibold">Is a spider a bug?</h2>

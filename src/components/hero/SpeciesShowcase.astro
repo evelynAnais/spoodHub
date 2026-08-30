@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import { creditLine, speciesShots } from '../../lib/species-shots';
+
+/**
+ * One frame crossfading between species, sized to sit beside the hero text.
+ *
+ * Exactly six photos, because the CSS keyframes divide the cycle into sixths.
+ * A keyframe percentage cannot come from a variable, so the count is fixed and
+ * `speciesShots(6)` cycles the pool when fewer photos exist.
+ */
+const shots = await speciesShots(6);
+const HOLD = 4;
+const total = 6 * HOLD;
+---
+
+{
+  shots.length > 0 && (
+    <figure class="w-full">
+      <div class="relative aspect-square overflow-hidden rounded-2xl border border-line bg-raised">
+        {shots.map((shot, i) => (
+          <Image
+            src={shot.photo.src}
+            alt={i === 0 ? `${shot.sex} ${shot.commonName.toLowerCase()}` : ''}
+            widths={[400, 800]}
+            sizes="(min-width: 1024px) 24rem, 90vw"
+            class="crossfade absolute inset-0 size-full object-cover"
+            style={`animation-duration:${total}s;animation-delay:${i * HOLD}s`}
+          />
+        ))}
+
+        <figcaption class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-10">
+          <span class="relative block h-5 text-sm font-medium text-white">
+            {shots.map((shot, i) => (
+              <a
+                href={`/species/${shot.slug}`}
+                class="crossfade absolute inset-0 hover:underline"
+                style={`animation-duration:${total}s;animation-delay:${i * HOLD}s`}
+              >
+                {shot.commonName}
+                <span class="font-normal opacity-70"> · {shot.sex}</span>
+              </a>
+            ))}
+          </span>
+        </figcaption>
+      </div>
+
+      <p class="mt-2 text-xs text-muted">Photos: {creditLine(shots)}</p>
+    </figure>
+  )
+}

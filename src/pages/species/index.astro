@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import CareIcon from '../../components/CareIcon.astro';
+import SpeciesMarquee from '../../components/hero/SpeciesMarquee.astro';
+import PageBanner from '../../components/PageBanner.astro';
 import Base from '../../layouts/Base.astro';
 
 const species = (await getCollection('species')).sort((a, b) =>
@@ -16,25 +18,66 @@ const DIFFICULTY_TONE = {
 ---
 
 <Base title="Species — spoodHub" description="Care profiles for commonly kept jumping spiders.">
-  <h1 class="text-3xl font-bold">Species</h1>
-  <p class="mt-2 max-w-2xl text-muted">
-    Profiles for jumping spiders commonly kept as pets. Every page is a Markdown file in the
-    repository — corrections and new species are welcome.
-  </p>
+  <PageBanner
+    title="Species"
+    subtitle="Profiles for jumping spiders commonly kept as pets. Every page is a Markdown file in the repository — corrections and new species are welcome."
+  />
 
+  {/*
+    The classification link previews its own contents rather than describing
+    them: the taxonomic chain is the thing that page teaches, so showing it
+    here does the decorating and the explaining at once. A reader who already
+    knows what Salticidae means can skip it on sight — which a generic
+    "learn more" card never lets them do.
+  */}
   <a
     href="/classification"
-    class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-accent/30 bg-accent/5 p-5 transition hover:border-accent/60"
+    class="group block rounded-2xl border border-accent/30 bg-accent/5 p-5 transition hover:border-accent/60 sm:p-6"
   >
-    <div class="min-w-0 flex-1">
-      <h2 class="font-semibold">New to this? Start with where jumping spiders fit</h2>
-      <p class="mt-1 text-sm text-muted">
-        Why a spider is not an insect or a bug, what the two-part Latin names mean, how tarantulas
-        differ, and how the species below relate to each other.
-      </p>
+    <div class="flex items-start gap-4">
+      <div class="min-w-0 flex-1">
+        <p class="text-xs font-semibold tracking-widest text-accent uppercase">New to this?</p>
+        <h2 class="mt-0.5 text-lg font-semibold">Where jumping spiders fit</h2>
+
+        <ol class="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-1.5 text-xs">
+          {
+            [
+              { name: 'Arthropoda', note: 'phylum' },
+              { name: 'Arachnida', note: 'class' },
+              { name: 'Araneae', note: 'order' },
+              { name: 'Salticidae', note: 'family' },
+              { name: 'Phidippus', note: 'genus' },
+            ].map((step, i) => (
+              <>
+                {i > 0 && (
+                  <li class="text-muted" aria-hidden="true">
+                    ›
+                  </li>
+                )}
+                <li
+                  class="rounded-full border border-line bg-surface px-2.5 py-1 transition group-hover:border-accent/40"
+                  title={step.note}
+                >
+                  {step.name}
+                </li>
+              </>
+            ))
+          }
+        </ol>
+
+        <p class="mt-3 text-sm text-muted">
+          Why a spider is not an insect or a bug, what the two-part Latin names mean, how
+          tarantulas differ, and how the species below relate to each other.
+        </p>
+      </div>
+
+      <span class="grid size-11 shrink-0 place-items-center rounded-full border border-accent/30 bg-bg text-accent transition group-hover:border-accent/60">
+        <CareIcon slug="__eyes" class="size-6" />
+      </span>
     </div>
-    <span class="text-accent" aria-hidden="true">→</span>
   </a>
+
+  <SpeciesMarquee />
 
   <ul class="mt-8 grid gap-4 sm:grid-cols-2">
     {

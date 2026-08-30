@@ -85,7 +85,7 @@ function TimelineRow({
         {event.notes ? <p className="mt-1.5 text-sm text-muted">{event.notes}</p> : null}
       </div>
 
-      <div className="flex shrink-0 gap-1 opacity-0 transition group-hover:opacity-100 focus-within:opacity-100">
+      <div className="flex shrink-0 gap-1 opacity-100 transition focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
         <button
           type="button"
           onClick={onEdit}

@@ -43,7 +43,14 @@ export function SpiderList({
     })
     .sort((a, b) => {
       const byUrgency = URGENCY[a.assessment.status] - URGENCY[b.assessment.status];
-      return byUrgency !== 0 ? byUrgency : a.spider.name.localeCompare(b.spider.name);
+      if (byUrgency !== 0) return byUrgency;
+
+      // Within the same molt status, anything owed a meal comes first — that
+      // is the difference between a list and a to-do list.
+      const byFeeding = Number(b.assessment.feedingDue) - Number(a.assessment.feedingDue);
+      if (byFeeding !== 0) return byFeeding;
+
+      return a.spider.name.localeCompare(b.spider.name);
     });
 
   return (
@@ -75,6 +82,22 @@ export function SpiderList({
               </div>
 
               <p className="mt-3 text-sm text-muted">{assessment.headline}</p>
+
+              {/* The summary tile counts these; this is where a keeper finds
+                  out which spider it meant. A count with no way to act on it
+                  is just a number. */}
+              {assessment.feedingDue ? (
+                <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent">
+                  Due a feeding
+                  {assessment.daysSinceLastFeed !== null ? (
+                    <span className="font-normal opacity-80">
+                      · {assessment.daysSinceLastFeed}d ago
+                    </span>
+                  ) : (
+                    <span className="font-normal opacity-80">· never fed</span>
+                  )}
+                </p>
+              ) : null}
 
               <dl className="mt-3 flex gap-4 text-xs text-muted">
                 <div>

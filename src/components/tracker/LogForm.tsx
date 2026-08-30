@@ -1,12 +1,14 @@
-import { useState, type SyntheticEvent } from 'react';
+import { useEffect, useState, type SyntheticEvent } from 'react';
 import {
   ALL_BEHAVIORS,
   HEALTH_CONCERNS,
+  deleteEvent,
   logEvent,
   PREMOLT_BEHAVIORS,
   REHOUSE_REASONS,
   replaceEvent,
   type Behavior,
+  type NewEvent,
   type EventType,
   type HealthConcern,
   type RehouseReason,
@@ -24,6 +26,25 @@ const EVENT_TABS: { type: EventType; label: string }[] = [
   { type: 'health', label: 'Health' },
   { type: 'note', label: 'Note' },
 ];
+
+function describePayload(e: NewEvent): string {
+  switch (e.type) {
+    case 'feed': {
+      const count = e.quantity && e.quantity > 1 ? `${e.quantity} × ` : '';
+      return `${e.accepted === false ? 'Refused' : 'Ate'} ${count}${e.prey ?? 'prey'}`;
+    }
+    case 'molt':
+      return e.newInstar ? `Molt to instar ${e.newInstar}` : 'Molt';
+    case 'behavior':
+      return (e.behaviors ?? []).map(humanizeTag).join(', ') || 'Behavior';
+    case 'health':
+      return e.concern ? humanizeTag(e.concern) : 'Health note';
+    case 'rehouse':
+      return 'Rehoused';
+    default:
+      return 'Note';
+  }
+}
 
 const COMMON_PREY = [
   'Blue bottle fly',
@@ -78,6 +99,18 @@ export function LogForm({
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmed, setConfirmed] = useState<{ id: string; summary: string } | null>(null);
+
+  useEffect(() => {
+    if (!confirmed) return;
+    const timer = setTimeout(() => setConfirmed(null), 6000);
+    return () => clearTimeout(timer);
+  }, [confirmed]);
+
+  useEffect(() => {
+    if (isEditing || spider.instar === undefined) return;
+    setNewInstar((current) => (current === '' ? String(spider.instar! + 1) : current));
+  }, [spider.instar, isEditing]);
 
   function toggleBehavior(tag: Behavior) {
     setBehaviors((current) =>
@@ -90,8 +123,6 @@ export function LogForm({
     setSaving(true);
     setError(null);
 
-    // Only the fields belonging to the chosen type are included, so switching
-    // a feeding to a molt does not leave `prey` and `accepted` on the record.
     const payload = {
       spiderId: spider.id,
       type,
@@ -109,17 +140,31 @@ export function LogForm({
     try {
       if (existing) {
         await replaceEvent(existing.id, payload);
-      } else {
-        await logEvent(payload);
-        setNotes('');
-        setBehaviors([]);
+        onDone?.();
+        return;
       }
+
+      const id = await logEvent(payload);
+
+      setNotes('');
+      setBehaviors([]);
+      setAt(toDateTimeInput());
+      if (payload.type === 'molt' && typeof payload.newInstar === 'number') {
+        setNewInstar(String(payload.newInstar + 1));
+      }
+      setConfirmed({ id, summary: describePayload(payload) });
       onDone?.();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Could not save that entry.');
     } finally {
       setSaving(false);
     }
+  }
+
+  async function undo() {
+    if (!confirmed) return;
+    await deleteEvent(confirmed.id);
+    setConfirmed(null);
   }
 
   return (
@@ -410,6 +455,23 @@ export function LogForm({
           placeholder="Anything worth remembering"
         />
       </Field>
+
+      {confirmed ? (
+        <p
+          role="status"
+          className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-ok/30 bg-ok/10 px-3 py-2 text-sm text-ok"
+        >
+          <span className="font-medium">Logged</span>
+          <span className="text-fg">{confirmed.summary}</span>
+          <button
+            type="button"
+            onClick={() => void undo()}
+            className="ml-auto font-medium text-accent hover:underline"
+          >
+            Undo
+          </button>
+        </p>
+      ) : null}
 
       {error ? (
         <p className="rounded-lg border border-alert/30 bg-alert/10 px-3 py-2 text-sm text-alert">

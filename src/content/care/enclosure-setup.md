@@ -2,6 +2,7 @@
 title: Enclosure setup
 summary: Vertical space, cross-ventilation, and a retreat near the top — the three things that matter most.
 order: 1
+stage: start
 tags:
   - housing
   - ventilation

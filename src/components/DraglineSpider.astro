@@ -1,0 +1,44 @@
+---
+/**
+ * A small jumping spider that drops from the wordmark on a silk line.
+ *
+ * Three deliberate limits, because a mascot in a global header is one wrong
+ * decision away from being irritating:
+ *
+ *   1. Landing page only. The header is on every page, and a descent replaying
+ *      on every navigation would grate by the third click.
+ *   2. The drop plays once. Only the sway loops, and slowly — a repeating
+ *      entrance is what makes this sort of thing feel like an advert.
+ *   3. `prefers-reduced-motion` gets a still spider already in place. It stays
+ *      visible rather than disappearing, because it is decoration either way.
+ *
+ * The dragline is accurate, incidentally: a jumping spider anchors silk before
+ * it drops, which is exactly why one that leaps off your hand ends up dangling
+ * rather than hitting the floor.
+ */
+---
+
+{/* flex + items-center so the 1px thread and the 18px body share a centre
+    line. Without it both start at the container's left edge and the silk
+    attaches to the spider's shoulder. */}
+<span
+  class="dragline pointer-events-none absolute top-full left-[3.2rem] z-20 flex flex-col items-center"
+  aria-hidden="true"
+>
+  <span class="dragline-thread block w-px bg-line"></span>
+
+  <svg viewBox="0 0 22 18" class="dragline-body -mt-px block w-[18px]" fill="none">
+    <!-- legs: four a side, angled forward like a salticid at rest -->
+    <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round" class="text-fg/70">
+      <path d="M8 8 L2 4M8 9.5 L1.5 8.5M8 11 L2.5 13M8.5 12 L4 16" />
+      <path d="M14 8 L20 4M14 9.5 L20.5 8.5M14 11 L19.5 13M13.5 12 L18 16" />
+    </g>
+    <!-- abdomen and cephalothorax -->
+    <ellipse cx="11" cy="13.2" rx="4.2" ry="4.4" class="fill-fg/80" />
+    <ellipse cx="11" cy="7.6" rx="3.6" ry="3.4" class="fill-fg" />
+    <!-- the big forward eyes, which are the whole reason a jumping spider
+         reads as a jumping spider at 18 pixels -->
+    <circle cx="9.4" cy="6.6" r="1.35" class="fill-accent" />
+    <circle cx="12.6" cy="6.6" r="1.35" class="fill-accent" />
+  </svg>
+</span>
