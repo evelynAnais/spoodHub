@@ -5,13 +5,12 @@ import { creditLine, speciesShots } from '../../lib/species-shots';
 /**
  * One frame crossfading between species, sized to sit beside the hero text.
  *
- * Exactly six photos, because the CSS keyframes divide the cycle into sixths.
- * A keyframe percentage cannot come from a variable, so the count is fixed and
- * `speciesShots(6)` cycles the pool when fewer photos exist.
+ * Exactly six photos: the .crossfade-1..6 classes in global.css divide a 24s
+ * cycle into six 4s slots, and neither a keyframe percentage nor a delay can
+ * come from a style attribute — CSP blocks those. `speciesShots(6)` cycles the
+ * pool when fewer photos exist.
  */
 const shots = await speciesShots(6);
-const HOLD = 4;
-const total = 6 * HOLD;
 ---
 
 {
@@ -24,8 +23,7 @@ const total = 6 * HOLD;
             alt={i === 0 ? `${shot.sex} ${shot.commonName.toLowerCase()}` : ''}
             widths={[400, 800]}
             sizes="(min-width: 1024px) 24rem, 90vw"
-            class="crossfade absolute inset-0 size-full object-cover"
-            style={`animation-duration:${total}s;animation-delay:${i * HOLD}s`}
+            class={`crossfade crossfade-${i + 1} absolute inset-0 size-full object-cover`}
           />
         ))}
 
@@ -34,8 +32,7 @@ const total = 6 * HOLD;
             {shots.map((shot, i) => (
               <a
                 href={`/species/${shot.slug}`}
-                class="crossfade absolute inset-0 hover:underline"
-                style={`animation-duration:${total}s;animation-delay:${i * HOLD}s`}
+                class={`crossfade crossfade-${i + 1} absolute inset-0 hover:underline`}
               >
                 {shot.commonName}
                 <span class="font-normal opacity-70"> · {shot.sex}</span>
