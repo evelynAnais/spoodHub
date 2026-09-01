@@ -60,13 +60,30 @@ export default defineConfig({
         "default-src 'self'",
         "img-src 'self' data:",
         "font-src 'self'",
-        "connect-src 'self'",
+        // Cloudflare Web Analytics posts its beacon here. The only third-party
+        // origin the site talks to, and the reason for the script-src entry
+        // below — the beacon is injected by Cloudflare at the edge, so it is
+        // not something the build can hash.
+        "connect-src 'self' https://cloudflareinsights.com",
         "manifest-src 'self'",
         "worker-src 'self'",
         "base-uri 'none'",
         "form-action 'none'",
         "object-src 'none'",
       ],
+      scriptDirective: {
+        /**
+         * `resources` REPLACES the default sources rather than adding to them,
+         * so `'self'` has to be listed explicitly. Omitting it drops `'self'`
+         * from script-src entirely and the tracker island stops loading — it
+         * pulls /_astro/TrackerApp.*.js in by dynamic import, which script-src
+         * governs.
+         *
+         * The Cloudflare entry is for the Web Analytics beacon, which is
+         * injected at the edge and therefore cannot be hashed at build time.
+         */
+        resources: ["'self'", 'https://static.cloudflareinsights.com'],
+      },
     },
   },
 

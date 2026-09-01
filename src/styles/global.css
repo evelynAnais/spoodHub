@@ -188,11 +188,44 @@ body {
   }
 }
 
+/* Timing lives here rather than in a style attribute. CSP hashes do not cover
+   `style="..."` attributes — only <style> blocks — so an inline animation-delay
+   is silently dropped, every image animates in unison and the cycle collapses
+   into a flicker. Six fixed classes, matching the six the component renders. */
 .crossfade {
   opacity: 0;
   animation-name: crossfade;
+  animation-duration: 24s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+}
+
+.crossfade-1 {
+  animation-delay: 0s;
+}
+.crossfade-2 {
+  animation-delay: 4s;
+}
+.crossfade-3 {
+  animation-delay: 8s;
+}
+.crossfade-4 {
+  animation-delay: 12s;
+}
+.crossfade-5 {
+  animation-delay: 16s;
+}
+.crossfade-6 {
+  animation-delay: 20s;
+}
+
+/* Also a style attribute previously — the blocked-return arrow on /about. */
+.dashed-rule {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--c-alert) 0 3px,
+    transparent 3px 7px
+  );
 }
 
 /* Marquee. The track holds the list twice, so translating by half its width
