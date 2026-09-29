@@ -37,6 +37,11 @@ export function relativeDays(iso: string, now: Date = new Date()): string {
   return `${Math.round(days / 365)}y ago`;
 }
 
+/** "1 day" / "3 days", for a count that has already been worked out. */
+export function dayCount(days: number): string {
+  return `${days} ${days === 1 ? 'day' : 'days'}`;
+}
+
 export function daysAgo(iso: string, now: Date = new Date()): number {
   return Math.floor((now.getTime() - new Date(iso).getTime()) / DAY_MS);
 }

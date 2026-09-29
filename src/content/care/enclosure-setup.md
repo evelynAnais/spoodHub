@@ -9,7 +9,7 @@ tags:
   - substrate
 sources:
   - label: Foelix, R. (2011) Biology of Spiders, 3rd ed.
-    url: https://global.oup.com/academic/product/biology-of-spiders-9780199734825
+    url: https://openlibrary.org/works/OL19831331W
     kind: book
 updated: 2026-08-18
 ---

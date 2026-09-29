@@ -77,6 +77,16 @@ export function Field({
 export const inputClass =
   'w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-fg outline-none focus:border-accent';
 
+/**
+ * Written out per tone rather than composed, because Tailwind only generates
+ * class names it can find as complete strings in the source.
+ */
+const STAT_TONES = {
+  accent: { box: 'border-accent/40 bg-accent/10', label: 'text-accent' },
+  watch: { box: 'border-watch/40 bg-watch/10', label: 'text-watch' },
+  plain: { box: 'border-line bg-raised', label: 'text-muted' },
+} as const;
+
 export function Stat({
   label,
   value,
@@ -84,15 +94,12 @@ export function Stat({
 }: {
   label: string;
   value: ReactNode;
-  tone?: 'accent';
+  tone?: 'accent' | 'watch';
 }) {
+  const classes = STAT_TONES[tone ?? 'plain'];
   return (
-    <div
-      className={`rounded-lg border px-3 py-2 ${
-        tone === 'accent' ? 'border-accent/40 bg-accent/10' : 'border-line bg-raised'
-      }`}
-    >
-      <div className={`text-xs ${tone === 'accent' ? 'text-accent' : 'text-muted'}`}>{label}</div>
+    <div className={`rounded-lg border px-3 py-2 ${classes.box}`}>
+      <div className={`text-xs ${classes.label}`}>{label}</div>
       <div className="mt-0.5 text-lg font-semibold tabular-nums">{value}</div>
     </div>
   );

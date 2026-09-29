@@ -35,6 +35,20 @@ export function SpiderBio({
       spider.sex === 'unknown' ? <span className="text-muted">unknown</span> : spider.sex,
   });
 
+  facts.push({
+    label: 'Stage',
+    value: spider.maturity ? (
+      <>
+        {spider.maturity}
+        {spider.maturity === 'adult' ? (
+          <span className="text-muted"> · no further molts</span>
+        ) : null}
+      </>
+    ) : (
+      <span className="text-muted">not stated</span>
+    ),
+  });
+
   if (spider.acquiredAt) {
     facts.push({
       label: 'Acquired',
