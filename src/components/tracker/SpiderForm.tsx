@@ -1,5 +1,11 @@
 import { useState, type SyntheticEvent } from 'react';
-import { createSpider, updateSpider, type Sex, type Spider } from '../../lib/db';
+import {
+  createSpider,
+  updateSpider,
+  type Maturity,
+  type Sex,
+  type Spider,
+} from '../../lib/db';
 import { toDateInput } from '../../lib/format';
 import type { SpeciesOption } from '../../lib/species';
 import { Button, Field, inputClass } from './ui';
@@ -20,6 +26,8 @@ export function SpiderForm({
   const [speciesName, setSpeciesName] = useState(existing?.speciesName ?? '');
   const [sex, setSex] = useState<Sex>(existing?.sex ?? 'unknown');
   const [instar, setInstar] = useState(existing?.instar ? String(existing.instar) : '');
+  // '' is the "not sure" option, and stores as undefined rather than a value.
+  const [maturity, setMaturity] = useState<Maturity | ''>(existing?.maturity ?? '');
   const [acquiredAt, setAcquiredAt] = useState(
     existing?.acquiredAt ? existing.acquiredAt.slice(0, 10) : toDateInput(),
   );
@@ -37,6 +45,7 @@ export function SpiderForm({
         speciesName: speciesSlug ? undefined : speciesName.trim() || undefined,
         sex,
         instar: instar ? Number(instar) : undefined,
+        maturity: maturity || undefined,
         acquiredAt: acquiredAt ? new Date(acquiredAt).toISOString() : undefined,
         source: source.trim() || undefined,
         notes: notes.trim() || undefined,
@@ -105,6 +114,24 @@ export function SpiderForm({
           </select>
         </Field>
 
+        <Field
+          label="Stage"
+          hint="An adult will not molt again, so marking this stops molt predictions."
+        >
+          <select
+            value={maturity}
+            onChange={(e) => setMaturity(e.target.value as Maturity | '')}
+            className={inputClass}
+          >
+            <option value="">Not sure</option>
+            <option value="immature">Immature</option>
+            <option value="subadult">Subadult</option>
+            <option value="adult">Adult</option>
+          </select>
+        </Field>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
         <Field label="Instar" hint="Optional. Improves the first molt estimate.">
           <input
             type="number"

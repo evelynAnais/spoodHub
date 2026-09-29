@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useState } from 'react';
 import { archiveSpider, deleteSpiderForever, eventsForSpider, type Spider } from '../../lib/db';
-import { formatDate, humanizeTag, relativeDays } from '../../lib/format';
+import { dayCount, formatDate, humanizeTag, relativeDays } from '../../lib/format';
 import { openHealthConcerns } from '../../lib/health';
 import { assessMolt, STATUS_META } from '../../lib/premolt';
 import type { SpeciesOption } from '../../lib/species';
@@ -29,7 +29,6 @@ export function SpiderDetail({
   const meta = STATUS_META[assessment.status];
 
   const moltCount = (events ?? []).filter((e) => e.type === 'molt').length;
-  const feedCount = (events ?? []).filter((e) => e.type === 'feed').length;
   const openConcerns = openHealthConcerns(events ?? []);
 
   if (editing) {
@@ -101,11 +100,16 @@ export function SpiderDetail({
           <p className="mt-2 text-sm">
             {assessment.daysSinceLastFeed === null
               ? `No feeding has been logged for ${spider.name} yet.`
-              : `Last fed ${assessment.daysSinceLastFeed} ${
-                  assessment.daysSinceLastFeed === 1 ? 'day' : 'days'
-                } ago.`}{' '}
+              : `Last offered ${dayCount(assessment.daysSinceLastFeed)} ago.`}{' '}
             At this stage prey is usually offered every {assessment.feedIntervalDays} days.
           </p>
+          {/* Only worth saying when the two differ — otherwise it repeats the line above. */}
+          {assessment.daysSinceLastMeal !== null &&
+          assessment.daysSinceLastMeal !== assessment.daysSinceLastFeed ? (
+            <p className="mt-1 text-sm text-muted">
+              Last actually ate {dayCount(assessment.daysSinceLastMeal)} ago.
+            </p>
+          ) : null}
         </div>
       ) : null}
 
@@ -132,16 +136,27 @@ export function SpiderDetail({
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Stat
-          label="Since last feed"
+          label="Last offered"
           tone={assessment.feedingDue ? 'accent' : undefined}
           value={assessment.daysSinceLastFeed === null ? '—' : `${assessment.daysSinceLastFeed}d`}
+        />
+        {/* The number a keeper actually worries about. Flagged once it is more
+            than twice the usual interval, which is well past a normal gap. */}
+        <Stat
+          label="Last ate"
+          tone={
+            assessment.daysSinceLastMeal !== null &&
+            assessment.daysSinceLastMeal >= assessment.feedIntervalDays * 2
+              ? 'watch'
+              : undefined
+          }
+          value={assessment.daysSinceLastMeal === null ? '—' : `${assessment.daysSinceLastMeal}d`}
         />
         <Stat
           label="Since last molt"
           value={assessment.daysSinceLastMolt === null ? '—' : `${assessment.daysSinceLastMolt}d`}
         />
         <Stat label="Molts logged" value={moltCount} />
-        <Stat label="Feedings" value={feedCount} />
       </div>
 
       {assessment.estimatedNextMolt ? (

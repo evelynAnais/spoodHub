@@ -81,6 +81,3 @@ not measured practice.
   *Evarcha arcuata* — but that is an inference from where it lives, not a specification.
 - **The males are worth watching.** The courtship display is the reason this species gets studied,
   and it is elaborate enough to be visible without magnification.
-
-If you keep this species, the husbandry sections here are the weakest on the site and would
-benefit enormously from firsthand numbers.

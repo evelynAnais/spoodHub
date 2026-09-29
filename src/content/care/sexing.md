@@ -105,8 +105,7 @@ hint is not a diagnosis.
 **Widely repeated in the hobby, and deliberately uncited here:** that *P. regius* becomes
 reliably sexable around the penultimate molt, roughly the fifth instar. This matches the
 developmental biology above and matches most keepers' experience, but no source for the specific
-timing has been verified. If you have raised a clutch and tracked it, that is exactly the
-observation this page is missing.
+timing has been verified.
 
 Note that this is a stage rather than an age. A warmer spider eats more and molts sooner, so it
 will reach the penultimate instar in less calendar time than a cooler one — two spiderlings from

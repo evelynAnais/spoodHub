@@ -32,6 +32,12 @@ sources:
       Journal of Arachnology 6: 1–29
     url: https://www.americanarachnology.org/journal-joa/joa-all-articles/article/download/JoA_v6_p1.pdf
     kind: paper
+  - label: >-
+      Jackson, R.R. (1980) Cannibalism as a factor in the mating strategy of the jumping spider
+      Phidippus johnsoni (Araneae, Salticidae). Bulletin of the British Arachnological Society
+      5(3): 129–133
+    url: https://britishspiders.org.uk/system/files/library/050306.pdf
+    kind: paper
   - label: World Spider Catalog — Phidippus johnsoni (Peckham & Peckham, 1883)
     url: https://wsc.nmbe.ch/species/31836/Phidippus_johnsoni
     kind: database
@@ -101,7 +107,6 @@ What can be said:
   the general guidance in the [feeding guide](/care/feeding).
 - **A dry-country species**, unlike the humid-habitat jumpers, so ventilation likely matters even
   more than usual.
-- **Females sometimes cannibalise males**, which is worth knowing before any pairing attempt.
-
-If you keep this species, its husbandry sections are among the emptiest on the site despite it
-being among the best studied — an odd gap, and one firsthand numbers would close.
+- **Cannibalism of males is rare**, despite the reputation. In this species it occurred in under
+  1% of nearly 1,800 laboratory encounters, and never once while a male shared a subadult
+  female's nest waiting for her to mature.

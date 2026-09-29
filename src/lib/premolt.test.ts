@@ -257,3 +257,109 @@ test('every verdict explains itself', () => {
   const result = assessMolt(spider({ instar: 5 }), events, TODAY);
   assert.ok(result.reasons.length > 0, 'expected at least one stated reason');
 });
+
+test('the last meal is tracked separately from the last offering', () => {
+  // The case that motivated this: prey offered today and refused, after a run
+  // of refusals. "Last fed" reads as today, which is true but misleading — the
+  // spider has not actually eaten for nine days.
+  const events = [feed(9, true), feed(6, false), feed(3, false), feed(0, false)];
+  const result = assessMolt(spider({ instar: 5 }), events, TODAY);
+
+  assert.equal(result.daysSinceLastFeed, 0, 'prey was offered today');
+  assert.equal(result.daysSinceLastMeal, 9, 'but the last accepted meal was 9 days ago');
+  assert.equal(result.refusalStreak, 3);
+});
+
+test('an accepted feeding makes both figures agree', () => {
+  const result = assessMolt(spider({ instar: 5 }), [feed(6, false), feed(2, true)], TODAY);
+  assert.equal(result.daysSinceLastFeed, 2);
+  assert.equal(result.daysSinceLastMeal, 2);
+});
+
+test('a spider that has only ever refused has no last meal', () => {
+  const result = assessMolt(spider({ instar: 5 }), [feed(4, false), feed(1, false)], TODAY);
+  assert.equal(result.daysSinceLastFeed, 1);
+  assert.equal(result.daysSinceLastMeal, null, 'never eaten, so there is no figure to give');
+});
+
+test('feedings logged before the accepted field existed count as meals', () => {
+  // Older entries have no `accepted` value at all. Only an explicit false is a
+  // refusal — otherwise every pre-existing log would read as "never eaten".
+  const legacy = event('feed', daysAgo(5), { prey: 'Cricket' });
+  const result = assessMolt(spider({ instar: 5 }), [legacy], TODAY);
+  assert.equal(result.daysSinceLastMeal, 5);
+});
+
+test('an adult is never projected a next molt', () => {
+  // Maturity is terminal, so there is no interval to count down and nothing for
+  // the calendar-driven branches to act on.
+  const events = [molt(60, 7), molt(20, 8)];
+  const adult = assessMolt(spider({ instar: 8, maturity: 'adult' }), events, TODAY);
+
+  assert.equal(adult.expectedIntervalDays, null);
+  assert.equal(adult.estimatedNextMolt, null);
+  assert.equal(adult.progress, null);
+
+  // Same history without the maturity flag still predicts, as it always did.
+  // Two molts is only one interval, which is not enough to use the spider's own
+  // history — so this comes from the instar table (8 → 45d), not the fallback.
+  const immature = assessMolt(spider({ instar: 8 }), events, TODAY);
+  assert.equal(immature.expectedIntervalDays, 45);
+  assert.ok(immature.estimatedNextMolt);
+});
+
+test('an adult refusing food is not reported as pre-molt', () => {
+  const refusing = [feed(9, false), feed(6, false), feed(3, false)];
+
+  const immature = assessMolt(spider({ instar: 5 }), refusing, TODAY);
+  assert.equal(immature.status, 'in-premolt', 'unchanged for a growing spider');
+
+  const adult = assessMolt(spider({ instar: 8, maturity: 'adult' }), refusing, TODAY);
+  assert.notEqual(adult.status, 'in-premolt');
+  assert.equal(adult.status, 'watch');
+  assert.ok(adult.reasons.some((r) => r.includes('not pre-molt')));
+});
+
+test('a sealed retreat in an adult female points at an egg sac, not a molt', () => {
+  const events = [behavior(2, 'sealed-retreat'), feed(4, false)];
+  const result = assessMolt(
+    spider({ sex: 'female', instar: 8, maturity: 'adult' }),
+    events,
+    TODAY,
+  );
+
+  assert.equal(result.status, 'watch');
+  assert.match(result.advice, /egg sac/i);
+});
+
+test('an adult male gets advice about senescence rather than egg sacs', () => {
+  const events = [behavior(2, 'lethargic'), feed(5, false)];
+  const result = assessMolt(spider({ sex: 'male', maturity: 'adult' }), events, TODAY);
+
+  assert.equal(result.status, 'watch');
+  assert.match(result.advice, /males are short-lived/i);
+});
+
+test('an adult with nothing unusual is still just feeding normally', () => {
+  const events = [feed(9, true), feed(6, true), feed(2, true)];
+  const result = assessMolt(spider({ instar: 8, maturity: 'adult' }), events, TODAY);
+  assert.equal(result.status, 'normal');
+});
+
+test('a freshly matured adult still gets the post-molt hold', () => {
+  // The molt that made her an adult is still a molt: fangs need to harden.
+  const result = assessMolt(
+    spider({ instar: 8, maturity: 'adult' }),
+    [molt(1, 8), feed(20, true)],
+    TODAY,
+  );
+  assert.equal(result.status, 'post-molt');
+  assert.equal(result.feedingDue, false);
+});
+
+test('a new adult is not told to log its first molt', () => {
+  const result = assessMolt(spider({ maturity: 'adult' }), [feed(2, true)], TODAY);
+  assert.equal(result.status, 'unknown');
+  assert.doesNotMatch(result.advice, /first molt/);
+  assert.match(result.advice, /will not molt again/);
+});

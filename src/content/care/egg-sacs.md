@@ -9,10 +9,15 @@ tags:
   - molting
 sources:
   - label: Foelix, R. (2011) Biology of Spiders, 3rd ed. — reproduction and sperm storage
-    url: https://global.oup.com/academic/product/biology-of-spiders-9780199734825
+    url: https://openlibrary.org/works/OL19831331W
     kind: book
   - label: Michalik, P. & Rittschof, C. (2011) Sperm dynamics in spiders — ultrastructural analysis of sperm activation
     url: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3765205/
+    kind: paper
+  - label: >-
+      Jackson, R.R. (1978) The life history of Phidippus johnsoni (Araneae: Salticidae).
+      Journal of Arachnology 6: 1–29 — one mating, successive fertile batches about a month apart
+    url: https://www.americanarachnology.org/journal-joa/joa-all-articles/article/download/JoA_v6_p1.pdf
     kind: paper
   - label: World Spider Catalog — Salticidae genus list
     url: https://wsc.nmbe.ch/genlist/83/Salticidae
@@ -36,9 +41,14 @@ is guarded just as fiercely, and costs her the same effort.
 
 There is a second route to a surprise sac, and it is the more common one for a wild-caught
 spider. After mating, a female stores sperm in her **spermathecae** — paired internal
-receptacles — and can draw on it later. The gap between mating and fertilizing eggs can run to
-months. So a female caught outdoors as an adult may produce a fertile sac long after arriving in
-your care, with no male anywhere in the picture.
+receptacles — and draws on that store for one clutch after another rather than fertilizing
+everything at once.
+
+In the species where this is best documented, females that mated a **single time** went on to lay
+up to **five fertile batches, roughly a month apart**. One mating can therefore keep a female
+laying fertile eggs for something close to half a year. A female caught outdoors as an adult may
+already be part-way through that series when she reaches you, with no male anywhere in the
+picture.
 
 Two practical consequences:
 
@@ -104,8 +114,7 @@ A single *Phidippus* sac can contain well over a hundred spiderlings, and they a
 almost immediately. You will need separate containers and a supply of very small prey
 (*Drosophila melanogaster*) far sooner than feels reasonable.
 
-Plan for that before pairing any spiders. See the breeding guide when it exists — and if you
-have raised a clutch, that guide badly needs your firsthand account.
+Plan for that before pairing any spiders — [breeding](/care/breeding) has the arithmetic.
 
 ## If you are unsure
 

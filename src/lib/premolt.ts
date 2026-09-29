@@ -29,7 +29,21 @@ export interface MoltAssessment {
   reasons: string[];
   /** null when there is not enough history to guess. */
   daysSinceLastMolt: number | null;
+  /**
+   * Days since prey was last *offered*, accepted or not. This is what drives
+   * the feeding interval: the question it answers is "when did I last try?".
+   */
   daysSinceLastFeed: number | null;
+  /**
+   * Days since the spider last actually *ate*.
+   *
+   * Tracked separately because a refusal is still a feeding event, so on its
+   * own `daysSinceLastFeed` resets every time prey is offered — a spider that
+   * has turned down four meals in a row can read as "fed today". For a keeper
+   * deciding whether to worry, the gap since the last real meal is the more
+   * important of the two numbers.
+   */
+  daysSinceLastMeal: number | null;
   refusalStreak: number;
   expectedIntervalDays: number | null;
   /** ISO date, null when unknown. */
@@ -147,6 +161,12 @@ function assessMoltStatus(
   const daysSinceLastMolt = lastMolt ? daysBetween(new Date(lastMolt.at), today) : null;
   const daysSinceLastFeed = lastFeed ? daysBetween(new Date(lastFeed.at), today) : null;
 
+  // `accepted` is optional: entries logged before the field existed have no
+  // value. Treated as eaten, matching how the refusal streak below reads them —
+  // only an explicit `false` counts as a refusal.
+  const lastMeal = feeds.filter((e) => e.accepted !== false).at(-1) ?? null;
+  const daysSinceLastMeal = lastMeal ? daysBetween(new Date(lastMeal.at), today) : null;
+
   // Consecutive refusals, counting back from the most recent feeding attempt.
   let refusalStreak = 0;
   for (let i = feeds.length - 1; i >= 0; i -= 1) {
@@ -160,8 +180,15 @@ function assessMoltStatus(
     intervals.push(daysBetween(new Date(molts[i - 1].at), new Date(molts[i].at)));
   }
 
-  const expectedIntervalDays =
-    intervals.length >= 2
+  // Maturity is terminal in jumping spiders: an adult has no next molt, so
+  // there is no interval to project and nothing for the calendar-driven
+  // branches below to act on. Leaving this non-null would have the tracker
+  // counting down to an event that is never coming.
+  const isAdult = spider.maturity === 'adult';
+
+  const expectedIntervalDays = isAdult
+    ? null
+    : intervals.length >= 2
       ? Math.round(median(intervals))
       : spider.instar
         ? (DEFAULT_INTERVAL_BY_INSTAR[spider.instar] ?? FALLBACK_INTERVAL_DAYS)
@@ -217,6 +244,7 @@ function assessMoltStatus(
     feedingDue: false, // filled in by assessMolt once the status is known
     daysSinceLastMolt,
     daysSinceLastFeed,
+    daysSinceLastMeal,
     refusalStreak,
     expectedIntervalDays,
     estimatedNextMolt,
@@ -236,7 +264,7 @@ function assessMoltStatus(
   }
 
   // --- Sealed into a retreat: the strongest signal there is.
-  if (sealedUp) {
+  if (sealedUp && !isAdult) {
     reasons.push('Sealed retreat reported in the last 14 days');
     if (refusalStreak > 0) reasons.push(`${refusalStreak} refused feeding${refusalStreak > 1 ? 's' : ''} in a row`);
     return {
@@ -280,7 +308,7 @@ function assessMoltStatus(
   }
 
   // --- Three refusals in a row is the classic pre-molt tell.
-  if (refusalStreak >= 3 || (refusalStreak >= 2 && (webbing || recentPremoltTags.size > 0))) {
+  if (!isAdult && (refusalStreak >= 3 || (refusalStreak >= 2 && (webbing || recentPremoltTags.size > 0)))) {
     reasons.push(`${refusalStreak} refused feedings in a row`);
     if (webbing) reasons.push('Heavy webbing reported recently');
     for (const tag of recentPremoltTags) {
@@ -308,7 +336,7 @@ function assessMoltStatus(
   // them this would just nag about healthy, hungry spiders.
   const hasBehavioralSignal = refusalStreak >= 1 || recentPremoltTags.size > 0;
 
-  if (refusalStreak >= 2 || (progress !== null && progress >= 0.85 && hasBehavioralSignal)) {
+  if (!isAdult && (refusalStreak >= 2 || (progress !== null && progress >= 0.85 && hasBehavioralSignal))) {
     if (refusalStreak >= 1) {
       reasons.push(
         `${refusalStreak} refused feeding${refusalStreak > 1 ? 's' : ''} in a row`,
@@ -330,8 +358,36 @@ function assessMoltStatus(
     };
   }
 
+  // --- An adult showing the signs that would mean pre-molt in a younger spider.
+  //
+  // The signals are identical — a sealed retreat, refused prey, a swelling
+  // abdomen — but for a mature spider pre-molt is not one of the available
+  // explanations. Rather than guess between the ones that remain, this names
+  // them and sends the keeper to look, which is what the evidence supports.
+  if (isAdult && (sealedUp || refusalStreak > 0 || recentPremoltTags.size > 0)) {
+    if (sealedUp) reasons.push('Sealed retreat reported in the last 14 days');
+    if (refusalStreak > 0) {
+      reasons.push(`${refusalStreak} refused feeding${refusalStreak > 1 ? 's' : ''} in a row`);
+    }
+    for (const tag of recentPremoltTags) {
+      if (tag !== 'sealed-retreat') reasons.push(`Reported: ${tag.replace(/-/g, ' ')}`);
+    }
+    reasons.push('Recorded as adult, so this is not pre-molt');
+
+    return {
+      ...base,
+      status: 'watch',
+      headline: 'Adult — worth a look',
+      advice:
+        spider.sex === 'female'
+          ? 'A mature female will not molt again, so these signs mean something else. A sealed chamber she is guarding is more likely an egg sac — see the egg sacs guide, which covers why an unmated female can still lay. Otherwise consider senescence or a health problem.'
+          : 'A mature spider will not molt again, so these signs mean something else. Adult males are short-lived and often taper off feeding as they age. Check for injury or dehydration, and keep water available.',
+      reasons,
+    };
+  }
+
   // --- Worth keeping an eye on: overdue on the calendar, or soft signs alone.
-  if ((progress !== null && progress >= 0.7) || recentPremoltTags.size > 0) {
+  if (!isAdult && ((progress !== null && progress >= 0.7) || recentPremoltTags.size > 0)) {
     if (progress !== null && progress >= 0.7) {
       reasons.push(
         `${daysSinceLastMolt}d since last molt (expected around ${expectedIntervalDays}d)`,
@@ -355,8 +411,9 @@ function assessMoltStatus(
       ...base,
       status: 'unknown',
       headline: 'Not enough history yet',
-      advice:
-        'Log a few feedings and the first molt. Once there are two molts on record, the estimate switches to this spider’s own interval.',
+      advice: isAdult
+        ? 'Log a few feedings to establish what normal looks like for this spider. There is no molt estimate to build — an adult will not molt again.'
+        : 'Log a few feedings and the first molt. Once there are two molts on record, the estimate switches to this spider’s own interval.',
       reasons: [],
     };
   }

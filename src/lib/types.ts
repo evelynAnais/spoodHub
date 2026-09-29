@@ -7,6 +7,8 @@
 
 export type Sex = 'female' | 'male' | 'unknown';
 
+export type Maturity = 'immature' | 'subadult' | 'adult';
+
 export type EventType = 'feed' | 'molt' | 'rehouse' | 'behavior' | 'health' | 'note';
 
 /** Behavior tags that feed into the pre-molt heuristic. */
@@ -63,6 +65,7 @@ export interface Spider {
   sex: Sex;
   /** Current instar. Unknown for most rescues/wild catches, so optional. */
   instar?: number;
+  maturity?: Maturity;
   acquiredAt?: string;
   source?: string;
   notes?: string;
