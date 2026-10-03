@@ -365,12 +365,6 @@ test('a new adult is not told to log its first molt', () => {
 });
 
 test('a molt spends the refusals and tags that predicted it', () => {
-  // Anais's bug. She logged refusals, the spider molted, the app correctly said
-  // "do not feed yet" for three days — and on day four flipped to pre-molt.
-  //
-  // Nothing new had happened. The refusals that predicted the molt were still
-  // the most recent feedings, because being told not to feed means no new
-  // feeding gets logged to break the streak.
   const events = [
     feed(12, false),
     feed(10, false),
