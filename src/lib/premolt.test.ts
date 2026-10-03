@@ -363,3 +363,29 @@ test('a new adult is not told to log its first molt', () => {
   assert.doesNotMatch(result.advice, /first molt/);
   assert.match(result.advice, /will not molt again/);
 });
+
+test('a molt spends the refusals and tags that predicted it', () => {
+  // Anais's bug. She logged refusals, the spider molted, the app correctly said
+  // "do not feed yet" for three days — and on day four flipped to pre-molt.
+  //
+  // Nothing new had happened. The refusals that predicted the molt were still
+  // the most recent feedings, because being told not to feed means no new
+  // feeding gets logged to break the streak.
+  const events = [
+    feed(12, false),
+    feed(10, false),
+    feed(8, false),
+    behavior(8, 'webbing', 'fat-abdomen'),
+    molt(4, 6),
+  ];
+  const result = assessMolt(spider({ instar: 6 }), events, TODAY);
+
+  assert.notEqual(result.status, 'in-premolt', 'molted 4 days ago — cannot be in pre-molt');
+  assert.equal(result.refusalStreak, 0, 'refusals before the molt are spent');
+});
+
+test('a sealed retreat logged before a molt does not survive it', () => {
+  const events = [behavior(6, 'sealed-retreat'), molt(4, 6)];
+  const result = assessMolt(spider({ instar: 6 }), events, TODAY);
+  assert.notEqual(result.status, 'in-premolt', 'that retreat was for the molt that happened');
+});
