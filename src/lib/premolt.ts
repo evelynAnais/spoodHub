@@ -167,10 +167,22 @@ function assessMoltStatus(
   const lastMeal = feeds.filter((e) => e.accepted !== false).at(-1) ?? null;
   const daysSinceLastMeal = lastMeal ? daysBetween(new Date(lastMeal.at), today) : null;
 
+  /**
+   * A molt spends the evidence that predicted it.
+   *
+   * Refused prey and a sealed retreat are signs of the molt that was coming —
+   * once it has happened they are history, not a forecast of the next one. Read
+   * them again afterwards and the tracker declares pre-molt days after a molt it
+   * was told about, which is both wrong and self-reinforcing: the keeper has
+   * been correctly advised not to feed, so no new feeding gets logged to break
+   * the streak, and the stale verdict persists.
+   */
+  const feedsSinceMolt = lastMolt ? feeds.filter((e) => e.at > lastMolt.at) : feeds;
+
   // Consecutive refusals, counting back from the most recent feeding attempt.
   let refusalStreak = 0;
-  for (let i = feeds.length - 1; i >= 0; i -= 1) {
-    if (feeds[i].accepted === false) refusalStreak += 1;
+  for (let i = feedsSinceMolt.length - 1; i >= 0; i -= 1) {
+    if (feedsSinceMolt[i].accepted === false) refusalStreak += 1;
     else break;
   }
 
@@ -208,10 +220,12 @@ function assessMoltStatus(
           .slice(0, 10)
       : null;
 
-  // Pre-molt behavior tags seen in the last two weeks.
+  // Pre-molt behavior tags seen in the last two weeks — and, for the reason
+  // above, only those logged since the last molt.
   const recentPremoltTags = new Set<string>();
   for (const event of behaviors) {
     if (daysBetween(new Date(event.at), today) > 14) continue;
+    if (lastMolt && event.at <= lastMolt.at) continue;
     for (const tag of event.behaviors ?? []) {
       if ((PREMOLT_BEHAVIORS as readonly string[]).includes(tag)) recentPremoltTags.add(tag);
     }
@@ -228,7 +242,7 @@ function assessMoltStatus(
     ? daysBetween(new Date(lastRehouse.at), today)
     : null;
   const refusalStreakStartedAt =
-    refusalStreak > 0 ? feeds[feeds.length - refusalStreak].at : null;
+    refusalStreak > 0 ? feedsSinceMolt[feedsSinceMolt.length - refusalStreak].at : null;
 
   const rehouseExplainsRefusals =
     lastRehouse !== null &&
